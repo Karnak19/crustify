@@ -1,9 +1,6 @@
 import React from "react";
+import { Dashboard } from "./dashboard";
 
 export default function PizzasPage() {
-  return (
-    <div>
-      <h1>Pizzas</h1>
-    </div>
-  );
+  return <Dashboard />;
 }

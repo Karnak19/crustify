@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import {
   Package2,
@@ -10,14 +9,6 @@ import {
   PanelLeft,
 } from "lucide-react";
 
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -30,16 +21,36 @@ import {
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 
 import Aside from "./aside";
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const supabase = createClient();
+
+  const { data } = await supabase.auth.getUser();
+
+  if (!data.user) {
+    redirect("/login");
+  }
+
+  const { data: website } = await supabase
+    .from("websites")
+    .select("name")
+    .eq("user_id", data.user?.id)
+    .single();
+
+  const avatarUrl = `https://api.dicebear.com/8.x/notionists-neutral/svg?seed=${
+    data.user.email || "anonymous"
+  }`;
+
   return (
-    <div className="flex min-h-screen w-full flex-col bg-muted/40">
+    <div className="flex min-h-screen w-full flex-col bg-background">
       <Aside />
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+      <div className="flex flex-col sm:gap-4 sm:py-4 md:gap-8 sm:pl-14">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
             <SheetTrigger asChild>
@@ -95,25 +106,11 @@ export default function DashboardLayout({
               </nav>
             </SheetContent>
           </Sheet>
-          <Breadcrumb className="hidden md:flex">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Dashboard</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="#">Products</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>All Products</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <div>
+            <h1 className="text-lg font-medium">
+              {website?.name || "Acme Inc"}
+            </h1>
+          </div>
           <div className="relative ml-auto flex-1 md:grow-0" />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -122,8 +119,8 @@ export default function DashboardLayout({
                 size="icon"
                 className="overflow-hidden rounded-full"
               >
-                <Image
-                  src="/placeholder-user.jpg"
+                <img
+                  src={avatarUrl}
                   width={36}
                   height={36}
                   alt="Avatar"
@@ -134,14 +131,13 @@ export default function DashboardLayout({
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        {children}
+        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0">
+          {children}
+        </main>
       </div>
     </div>
   );

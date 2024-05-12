@@ -6,12 +6,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
 import Nav from "./nav";
 
 export default function Aside() {
   return (
     <TooltipProvider>
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-card sm:flex">
         <Nav />
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-4">
           <Tooltip>

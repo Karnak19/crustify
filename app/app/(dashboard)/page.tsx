@@ -1,5 +1,5 @@
-import { Dashboard } from "./dashboard";
+import { Setup } from "./setup";
 
 export default function DashboardPage() {
-  return <Dashboard />;
+  return <Setup />;
 }

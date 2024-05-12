@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "gen-types": "bunx supabase gen types typescript --project-id 'nmjhpbgvbzkikazppran' --schema public > lib/supabase/types.ts",
     "lint": "next lint"
   },
   "dependencies": {

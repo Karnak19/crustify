@@ -1,16 +1,15 @@
 "use client";
 
+import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-import type { LucideIcon } from "lucide-react";
 
 export default function NavItem(props: {
   path: string;
@@ -25,9 +24,10 @@ export default function NavItem(props: {
         <Link
           href={props.path}
           className={cn(
-            "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8",
+            "flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground hover:bg-primary transition-colors hover:text-primary-foreground md:h-8 md:w-8",
             {
-              "text-foreground": path.includes(props.title.toLowerCase()),
+              "bg-primary text-primary-foreground hover:text-background":
+                path.includes(props.title.toLowerCase()),
             }
           )}
         >
