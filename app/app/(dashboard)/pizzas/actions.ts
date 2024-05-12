@@ -2,6 +2,7 @@
 
 import { getSession } from "@/lib/supabase/get-session";
 import { createClient } from "@/lib/supabase/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
 const pizzaInputSchema = z.object({
@@ -54,5 +55,35 @@ export async function createPizza(formData: FormData) {
     picture: imgData?.path,
   });
 
+  revalidatePath("/pizzas");
+
   console.log("🚀 ~ createPizza ~ error:", error);
+}
+
+export async function publishPizza(formData: FormData) {
+  const supabase = createClient();
+
+  const id = formData.get("id");
+
+  if (!id) {
+    throw new Error("No id provided");
+  }
+
+  await supabase.from("pizzas").update({ status: "published" }).eq("id", +id);
+
+  revalidatePath("/pizzas");
+}
+
+export async function unpublishPizza(formData: FormData) {
+  const supabase = createClient();
+
+  const id = formData.get("id");
+
+  if (!id) {
+    throw new Error("No id provided");
+  }
+
+  await supabase.from("pizzas").update({ status: "draft" }).eq("id", +id);
+
+  revalidatePath("/pizzas");
 }

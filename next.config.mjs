@@ -1,13 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	// images: {
-	// loader:'custom',
-	// 	remotePatterns: [
-	// 		{
-	// 			hostname: "api.dicebear.com",
-	// 		},
-	// 	],
-	// },
+	images: {
+		remotePatterns: [
+			{
+				hostname: "*.supabase.co",
+			},
+		],
+	},
 };
 
 export default nextConfig;

@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/card";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -36,6 +38,8 @@ import {
 } from "@/components/ui/dialog";
 import { CreatePizzaForm } from "./create-pizza-form";
 import { cn } from "@/lib/utils";
+import { publishPizza } from "./actions";
+import Dropdown from "./dropdown";
 
 export async function Dashboard() {
   const pizzas = await getMyPizzas();
@@ -74,7 +78,10 @@ export async function Dashboard() {
       <Card>
         <CardHeader>
           <CardTitle>Pizzas</CardTitle>
-          <CardDescription>Manage your pizzas</CardDescription>
+          <CardDescription>
+            Gérez vos pizzas ici. Vous pouvez créer, modifier et supprimer des
+            pizzas.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -83,15 +90,9 @@ export async function Dashboard() {
                 <TableHead className="hidden w-[100px] sm:table-cell">
                   <span className="sr-only">Image</span>
                 </TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Price</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Total Sales
-                </TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Created at
-                </TableHead>
+                <TableHead>Nom</TableHead>
+                <TableHead>Statut</TableHead>
+                <TableHead>Prix</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -102,13 +103,12 @@ export async function Dashboard() {
                 return (
                   <TableRow key={pizza.id}>
                     <TableCell className="hidden sm:table-cell">
-                      <img
+                      <Image
                         alt={pizza.name}
                         className="aspect-square rounded-md object-cover"
-                        height="64"
-                        // src="/placeholder.svg"
-                        src={getImageUrl(pizza.picture)}
-                        width="64"
+                        src={getImageUrl({ path: pizza.picture })}
+                        height="100"
+                        width="100"
                       />
                     </TableCell>
                     <TableCell className="font-medium">{pizza.name}</TableCell>
@@ -131,28 +131,8 @@ export async function Dashboard() {
                         currency: "EUR",
                       })}
                     </TableCell>
-                    <TableCell className="hidden md:table-cell">25</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      2023-07-12 10:42 AM
-                    </TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            aria-haspopup="true"
-                            size="icon"
-                            variant="ghost"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem>Delete</DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Dropdown {...pizza} />
                     </TableCell>
                   </TableRow>
                 );

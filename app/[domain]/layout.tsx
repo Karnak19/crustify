@@ -89,7 +89,7 @@ export default async function SiteLayout({
               <img
                 alt={data.name || ""}
                 height={40}
-                src={getImageUrl(data.logo)}
+                src={getImageUrl({ path: data.logo })}
                 width={40}
               />
             </div>

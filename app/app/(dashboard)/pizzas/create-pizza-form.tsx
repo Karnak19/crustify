@@ -1,10 +1,14 @@
+"use client";
+import { LoaderIcon, PizzaIcon } from "lucide-react";
+import { useFormStatus } from "react-dom";
+
 import { Label } from "@/components/ui/label";
-import { createPizza } from "./actions";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PizzaIcon } from "lucide-react";
 
-export async function CreatePizzaForm() {
+import { createPizza } from "./actions";
+
+export function CreatePizzaForm() {
   return (
     <form action={createPizza} className="grid gap-4">
       <div className="grid gap-2">
@@ -25,11 +29,22 @@ export async function CreatePizzaForm() {
       </div>
 
       <div className="grid gap-2">
-        <Button type="submit">
-          <PizzaIcon className="h-4 w-4 mr-2" />
-          Create Pizza
-        </Button>
+        <SubmitButton />
       </div>
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? (
+        <LoaderIcon className="h-4 w-4 mr-2 animate-spin" />
+      ) : (
+        <PizzaIcon className="h-4 w-4 mr-2" />
+      )}
+      Créer la pizza
+    </Button>
   );
 }
