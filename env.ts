@@ -8,7 +8,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
 
     NEXT_PUBLIC_ROOT_DOMAIN: z.string().default("localhost:3000"),
-    NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX: z.string(),
+    NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX: z.string().optional(),
   },
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
   runtimeEnv: {
