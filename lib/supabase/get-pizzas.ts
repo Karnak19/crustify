@@ -45,7 +45,7 @@ export async function getMyPizzas() {
         id: number;
         name: string;
         price: number;
-        status: string;
+        status: "draft" | "published";
         picture: string;
       }[]
     >();
