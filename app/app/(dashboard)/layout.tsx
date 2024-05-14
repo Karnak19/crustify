@@ -23,6 +23,7 @@ import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 import Aside from "./aside";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
+import UserMenu from "./user-menu";
 
 export default async function DashboardLayout({
   children,
@@ -112,28 +113,7 @@ export default async function DashboardLayout({
             </h1>
           </div>
           <div className="relative ml-auto flex-1 md:grow-0" />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="overflow-hidden rounded-full"
-              >
-                <img
-                  src={avatarUrl}
-                  width={36}
-                  height={36}
-                  alt="Avatar"
-                  className="overflow-hidden rounded-full"
-                />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <UserMenu avatarUrl={avatarUrl} />
         </header>
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0">
           {children}

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { createPizza } from "./actions";
+import { Textarea } from "@/components/ui/textarea";
 
 export function CreatePizzaForm() {
   return (
@@ -17,7 +18,7 @@ export function CreatePizzaForm() {
       </div>
       <div className="grid gap-2">
         <Label>Description:</Label>
-        <Input type="text" name="description" />
+        <Textarea name="description" />
       </div>
       <div className="grid gap-2">
         <Label>Price:</Label>

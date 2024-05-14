@@ -7,6 +7,7 @@ import { z } from "zod";
 
 const pizzaInputSchema = z.object({
   name: z.string(),
+  description: z.string().optional(),
   price: z.coerce.number(),
   picture: z.instanceof(File),
   website_id: z.coerce.number(),

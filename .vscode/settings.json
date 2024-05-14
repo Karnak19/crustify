@@ -1,4 +1,9 @@
 {
 	"editor.defaultFormatter": "biomejs.biome",
-	"typescript.preferences.autoImportFileExcludePatterns": ["next/router.d.ts", "next/dist/client/router.d.ts", "@radix-ui/**/*"]
+	"typescript.preferences.autoImportFileExcludePatterns": [
+		"next/router.d.ts",
+		"next/dist/client/router.d.ts",
+		"@radix-ui/**/*",
+		"postcss"
+	]
 }

@@ -30,6 +30,7 @@ export type Database = {
       pizzas: {
         Row: {
           created_at: string
+          description: string | null
           id: number
           name: string
           picture: string | null
@@ -39,6 +40,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: number
           name: string
           picture?: string | null
@@ -48,6 +50,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: number
           name?: string
           picture?: string | null

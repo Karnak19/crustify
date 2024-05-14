@@ -2,22 +2,11 @@ import "server-only";
 
 import { createClient } from "./server";
 
-export function getImageUrl({
-  path,
-  quality = 90,
-  width,
-  height,
-}: {
-  path?: string | null;
-  quality?: number;
-  width?: number;
-  height?: number;
-}) {
+export function getImageUrl({ path }: { path?: string | null }) {
   if (!path) {
-    return "/placeholder.png";
+    return "";
   }
 
-  return createClient().storage.from("pizzas").getPublicUrl(path, {
-    // transform: { quality, height, width },
-  }).data.publicUrl;
+  return createClient().storage.from("pizzas").getPublicUrl(path, {}).data
+    .publicUrl;
 }

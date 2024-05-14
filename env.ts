@@ -2,7 +2,11 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { z } from "zod";
 
 export const env = createEnv({
-  server: {},
+  server: {
+    TEAM_ID_VERCEL: z.string().optional(),
+    PROJECT_ID_VERCEL: z.string(),
+    AUTH_BEARER_TOKEN: z.string(),
+  },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string(),
@@ -12,6 +16,10 @@ export const env = createEnv({
   },
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
   runtimeEnv: {
+    TEAM_ID_VERCEL: process.env.TEAM_ID_VERCEL,
+    PROJECT_ID_VERCEL: process.env.PROJECT_ID_VERCEL,
+    AUTH_BEARER_TOKEN: process.env.AUTH_BEARER_TOKEN,
+
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 

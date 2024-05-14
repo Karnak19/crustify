@@ -13,9 +13,17 @@ export async function getPizzas(domain: string) {
 
   const { data } = await supabase
     .from("pizzas")
-    .select("id, name, price, picture, websites:website_id (subdomain)")
+    .select("id, name, price, picture, website_id!inner (subdomain)")
     .eq("website_id.subdomain", eq)
-    .eq("status", "published");
+    .eq("status", "published")
+    .returns<
+      {
+        id: number;
+        name: string;
+        price: number;
+        picture: string;
+      }[]
+    >();
 
   return data;
 }
@@ -30,8 +38,17 @@ export async function getMyPizzas() {
 
   const { data } = await supabase
     .from("pizzas")
-    .select("id, name, price, status, picture, websites:website_id (user_id)")
-    .eq("websites.user_id", user.id);
+    .select("id, name, price, status, picture, websites!inner (user_id)")
+    .eq("websites.user_id", user.id)
+    .returns<
+      {
+        id: number;
+        name: string;
+        price: number;
+        status: string;
+        picture: string;
+      }[]
+    >();
 
   return data;
 }
