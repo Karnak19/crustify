@@ -1,5 +1,7 @@
 "use client";
 
+import type { ChangeEvent } from "react";
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -7,14 +9,24 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 import { signup } from "../login/actions";
-import { useRef } from "react";
+import { useFormState } from "react-dom";
+import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
+  const router = useRouter();
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const [state, formAction] = useFormState(signup, null);
 
-  const onConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run on state changes
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/");
+    }
+  }, [state]);
+
+  const onConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const password = passwordRef.current?.value;
     const confirmPassword = e.target.value;
     const submitButton = submitButtonRef.current;
@@ -34,7 +46,7 @@ export default function SignupPage() {
   };
 
   return (
-    <form className="mx-auto grid w-[350px] gap-6" action={signup}>
+    <form className="mx-auto grid w-[350px] gap-6" action={formAction}>
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Inscription</h1>
         <p className="text-muted-foreground">

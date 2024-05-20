@@ -93,13 +93,15 @@ export async function Dashboard() {
                 return (
                   <TableRow key={pizza.id}>
                     <TableCell className="hidden sm:table-cell">
-                      <Image
-                        alt={pizza.name}
-                        className="aspect-square rounded-md object-cover"
-                        src={getImageUrl({ path: pizza.picture })}
-                        height="100"
-                        width="100"
-                      />
+                      {pizza.picture && (
+                        <Image
+                          alt={pizza.name}
+                          className="aspect-square rounded-md object-cover"
+                          src={getImageUrl({ path: pizza.picture })}
+                          height="100"
+                          width="100"
+                        />
+                      )}
                     </TableCell>
                     <TableCell className="font-medium">{pizza.name}</TableCell>
                     <TableCell>

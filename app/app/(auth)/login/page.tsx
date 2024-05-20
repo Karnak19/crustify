@@ -1,14 +1,29 @@
+"use client";
+import { useEffect } from "react";
+import { useFormState } from "react-dom";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 import { login } from "./actions";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [state, formAction] = useFormState(login, null);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run on state changes
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/");
+    }
+  }, [state]);
+
   return (
-    <form className="mx-auto grid w-[350px] gap-6" action={login}>
+    <form className="mx-auto grid w-[350px] gap-6" action={formAction}>
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Connexion</h1>
         <p className="text-muted-foreground">
@@ -19,6 +34,7 @@ export default function LoginPage() {
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
+            className={cn({ "ring-2 ring-red-500": state?.error })}
             id="email"
             type="email"
             name="email"
@@ -36,7 +52,16 @@ export default function LoginPage() {
               Mot de passe oublié ?
             </Link>
           </div>
-          <Input id="password" name="password" type="password" required />
+          <Input
+            className={cn({ "ring-2 ring-red-500": state?.error })}
+            id="password"
+            name="password"
+            type="password"
+            required
+          />
+          {state?.error && (
+            <p className="text-red-500 text-sm">{state.error}</p>
+          )}
         </div>
         <Button type="submit" className="w-full">
           Connexion

@@ -1,4 +1,3 @@
-import React from "react";
 import { Dashboard } from "./dashboard";
 import { createClient } from "@/lib/supabase/server";
 import { notFound, redirect } from "next/navigation";

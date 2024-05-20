@@ -1,55 +1,61 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
+import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 
-export async function login(formData: FormData) {
+const inputSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+export async function login(_: unknown, formData: FormData) {
   const supabase = createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
+  const input = inputSchema.safeParse({
     email: formData.get("email") as string,
     password: formData.get("password") as string,
-  };
-  console.log("🚀 ~ login ~ data:", data);
+  });
 
-  const { error } = await supabase.auth.signInWithPassword(data);
-  console.log("🚀 ~ login ~ error:", error);
+  if (!input.success) {
+    return { error: "Veuillez entrer un email et un mot de passe valides" };
+  }
+
+  const { error } = await supabase.auth.signInWithPassword(input.data);
 
   if (error) {
-    redirect("/error");
+    return { error: "Email ou mot de passe invalide(s)" };
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  return { success: true };
 }
 
-export async function signup(formData: FormData) {
+export async function signup(_: unknown, formData: FormData) {
   const supabase = createClient();
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
+  const data = inputSchema.safeParse({
     email: formData.get("email") as string,
     password: formData.get("password") as string,
-  };
-  console.log("🚀 ~ signup ~ data:", data);
+  });
+
+  if (!data.success) {
+    return { error: "Veuillez entrer un email et un mot de passe valides" };
+  }
 
   const { error } = await supabase.auth.signUp({
-    ...data,
+    ...data.data,
     options: {
-      emailRedirectTo: `http://app.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+      emailRedirectTo: `https://app.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
     },
   });
 
   if (error) {
-    redirect("/error");
+    return { error: error.message };
   }
 
   revalidatePath("/", "layout");
-  redirect("/");
+  return { success: true };
 }
