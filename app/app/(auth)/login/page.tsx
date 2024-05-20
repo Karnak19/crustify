@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 import { login } from "./actions";
+import { LoaderIcon } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -63,9 +64,7 @@ export default function LoginPage() {
             <p className="text-red-500 text-sm">{state.error}</p>
           )}
         </div>
-        <Button type="submit" className="w-full">
-          Connexion
-        </Button>
+        <SubmitButton />
       </div>
       <div className="mt-4 text-center text-sm">
         Pas encore de compte ?{" "}
@@ -77,5 +76,15 @@ export default function LoginPage() {
         </Link>
       </div>
     </form>
+  );
+}
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending}>
+      {pending ? <LoaderIcon className="h-4 w-4 mr-2 animate-spin" /> : null}
+      Connexion
+    </Button>
   );
 }
