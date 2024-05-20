@@ -1,8 +1,8 @@
-// dynamicBlurDataUrl.js
-const baseUrl =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:3000/"
-    : process.env.NEXT_PUBLIC_DOMAIN;
+import { env } from "@/env";
+
+const baseUrl = `${
+  process.env.NODE_ENV === "development" ? "http" : "https"
+}://${env.NEXT_PUBLIC_ROOT_DOMAIN}`;
 
 export async function dynamicBlurDataUrl(url: string) {
   const base64str = await fetch(
