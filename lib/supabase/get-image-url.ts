@@ -7,6 +7,7 @@ export function getImageUrl({ path }: { path?: string | null }) {
     return "";
   }
 
-  return createClient().storage.from("pizzas").getPublicUrl(path, {}).data
-    .publicUrl;
+  return `${
+    createClient().storage.from("pizzas").getPublicUrl(path, {}).data.publicUrl
+  }?fit=crop`;
 }
