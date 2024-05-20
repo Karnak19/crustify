@@ -14,18 +14,29 @@ export type Database = {
           created_at: string
           id: number
           name: string
+          website_id: number
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
+          website_id: number
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
+          website_id?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "ingredients_website_id_fkey"
+            columns: ["website_id"]
+            isOneToOne: false
+            referencedRelation: "websites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pizzas: {
         Row: {
