@@ -1,6 +1,5 @@
 "use server";
 
-import { verifyDomain } from "@/lib/domains";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";

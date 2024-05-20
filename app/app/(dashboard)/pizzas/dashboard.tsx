@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { MoreHorizontal, PlusCircle } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -11,15 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -38,7 +29,6 @@ import {
 } from "@/components/ui/dialog";
 import { CreatePizzaForm } from "./create-pizza-form";
 import { cn } from "@/lib/utils";
-import { publishPizza } from "./actions";
 import Dropdown from "./dropdown";
 
 export async function Dashboard() {

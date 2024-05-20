@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/supabase/get-site-data";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
@@ -20,7 +19,7 @@ export async function generateMetadata({
     return null;
   }
 
-  const image = data.logo ? getImageUrl({ path: data.logo }) : "";
+  const image = data.logo ? getImageUrl({ path: data.logo }) : undefined;
 
   return {
     title: data.name,
@@ -28,16 +27,16 @@ export async function generateMetadata({
     openGraph: {
       title: data.name,
       description: "",
-      images: [image],
+      ...(image && { images: [image] }),
     },
     twitter: {
       card: "summary_large_image",
       title: data.name,
       description: "",
-      images: [image],
-      creator: "@vercel",
+      ...(image && { image: [image] }),
+      creator: "@bazbazeso",
     },
-    icons: [image],
+    ...(image && { icons: [image] }),
     metadataBase: new URL(`https://${domain}`),
     // Optional: Set canonical URL to custom domain if it exists
     // ...(params.domain.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) &&
