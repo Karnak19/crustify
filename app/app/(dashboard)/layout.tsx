@@ -1,3 +1,4 @@
+import type React from "react";
 import Link from "next/link";
 import {
   Package2,
@@ -10,20 +11,17 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet";
 
 import Aside from "./aside";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import UserMenu from "./user-menu";
+import { env } from "@/env";
+
+export const metadata = {
+  title: "Dashboard | Crustify",
+};
 
 export default async function DashboardLayout({
   children,
@@ -40,7 +38,7 @@ export default async function DashboardLayout({
 
   const { data: website } = await supabase
     .from("websites")
-    .select("name")
+    .select("name, subdomain")
     .eq("user_id", data.user?.id)
     .single();
 
@@ -50,7 +48,11 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen w-full flex-col bg-background">
-      <Aside />
+      <Aside
+        url={`${process.env.NODE_ENV === "development" ? "http" : "https"}://${
+          website?.subdomain
+        }.${env.NEXT_PUBLIC_ROOT_DOMAIN}`}
+      />
       <div className="flex flex-col sm:gap-4 sm:py-4 md:gap-8 sm:pl-14">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
@@ -113,11 +115,9 @@ export default async function DashboardLayout({
             </h1>
           </div>
           <div className="relative ml-auto flex-1 md:grow-0" />
-          <UserMenu avatarUrl={avatarUrl} />
+          <UserMenu avatarUrl={avatarUrl} email={data.user.email} />
         </header>
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0">
-          {children}
-        </main>
+        {children}
       </div>
     </div>
   );

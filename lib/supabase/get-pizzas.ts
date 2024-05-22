@@ -13,13 +13,16 @@ export async function getPizzas(domain: string) {
 
   const { data } = await supabase
     .from("pizzas")
-    .select("id, name, price, picture, website_id!inner (subdomain)")
+    .select(
+      "id, name, description, price, picture, website_id!inner (subdomain)"
+    )
     .eq("website_id.subdomain", eq)
     .eq("status", "published")
     .returns<
       {
         id: number;
         name: string;
+        description: string;
         price: number;
         picture: string;
       }[]
@@ -38,12 +41,15 @@ export async function getMyPizzas() {
 
   const { data } = await supabase
     .from("pizzas")
-    .select("id, name, price, status, picture, websites!inner (user_id)")
+    .select(
+      "id, name, price, description, status, picture, websites!inner (user_id)"
+    )
     .eq("websites.user_id", user.id)
     .returns<
       {
         id: number;
         name: string;
+        description: string;
         price: number;
         status: "draft" | "published";
         picture: string;

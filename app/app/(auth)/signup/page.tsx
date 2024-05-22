@@ -1,6 +1,6 @@
 "use client";
 
-import type { ChangeEvent } from "react";
+import type { ChangeEvent, RefObject } from "react";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 
@@ -9,8 +9,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 import { signup } from "../login/actions";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { useRouter } from "next/navigation";
+import { LoaderIcon } from "lucide-react";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -87,9 +88,7 @@ export default function SignupPage() {
             onChange={onConfirmPasswordChange}
           />
         </div>
-        <Button ref={submitButtonRef} type="submit" className="w-full">
-          S'inscrire
-        </Button>
+        <SubmitButton buttonRef={submitButtonRef} />
       </div>
       <div className="mt-4 text-center text-sm">
         Déjà un compte ?{" "}
@@ -98,5 +97,19 @@ export default function SignupPage() {
         </Link>
       </div>
     </form>
+  );
+}
+
+function SubmitButton({
+  buttonRef,
+}: {
+  buttonRef: RefObject<HTMLButtonElement>;
+}) {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} ref={buttonRef}>
+      {pending ? <LoaderIcon className="h-4 w-4 mr-2 animate-spin" /> : null}
+      S'inscrire
+    </Button>
   );
 }

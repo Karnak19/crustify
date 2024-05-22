@@ -4,8 +4,10 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getSiteData } from "@/lib/supabase/get-site-data";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
+import Script from "next/script";
 
 export const dynamic = "force-static";
+export const revalidate = 86400; // 24 hours
 
 export async function generateMetadata({
   params,
@@ -34,7 +36,6 @@ export async function generateMetadata({
       title: data.name,
       description: "",
       ...(image && { image: [image] }),
-      creator: "@bazbazeso",
     },
     ...(image && { icons: [image] }),
     metadataBase: new URL(`https://${domain}`),
@@ -72,7 +73,7 @@ export default async function SiteLayout({
   // }
 
   return (
-    <div className={""}>
+    <div>
       <div className="ease left-0 right-0 top-0 z-30 flex h-16 bg-white transition-all duration-150 dark:bg-black dark:text-white">
         <div className="mx-auto flex h-full max-w-screen-xl items-center justify-center space-x-5 px-10 sm:px-20">
           <Link href="/" className="flex items-center justify-center">
@@ -94,6 +95,12 @@ export default async function SiteLayout({
       </div>
 
       <div className="mt-20">{children}</div>
+
+      <Script
+        defer
+        data-domain={domain}
+        src="http://plausible.rover.vernouillet.dev/js/script.js"
+      />
 
       {/* {domain === `demo.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
       domain === "platformize.co" ? (

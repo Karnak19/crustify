@@ -111,6 +111,7 @@ export type Database = {
           id: number
           logo: string | null
           name: string | null
+          plausible_shared_link: string | null
           subdomain: string
           user_id: string
         }
@@ -119,6 +120,7 @@ export type Database = {
           id?: number
           logo?: string | null
           name?: string | null
+          plausible_shared_link?: string | null
           subdomain: string
           user_id: string
         }
@@ -127,6 +129,7 @@ export type Database = {
           id?: number
           logo?: string | null
           name?: string | null
+          plausible_shared_link?: string | null
           subdomain?: string
           user_id?: string
         }

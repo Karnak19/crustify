@@ -4,7 +4,7 @@ import Image from "next/image";
 import PizzaImage from "./pizza.jpg";
 
 export const metadata: Metadata = {
-  title: "Login | Platforms Starter Kit",
+  title: "Connexion | Crustify",
 };
 
 export default function AuthLayout({ children }: { children: ReactNode }) {

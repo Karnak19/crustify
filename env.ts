@@ -6,6 +6,7 @@ export const env = createEnv({
     TEAM_ID_VERCEL: z.string().optional(),
     PROJECT_ID_VERCEL: z.string(),
     AUTH_BEARER_TOKEN: z.string(),
+    PLAUSIBLE_API_KEY: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
@@ -16,6 +17,7 @@ export const env = createEnv({
   },
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
   runtimeEnv: {
+    PLAUSIBLE_API_KEY: process.env.PLAUSIBLE_API_KEY,
     TEAM_ID_VERCEL: process.env.TEAM_ID_VERCEL,
     PROJECT_ID_VERCEL: process.env.PROJECT_ID_VERCEL,
     AUTH_BEARER_TOKEN: process.env.AUTH_BEARER_TOKEN,

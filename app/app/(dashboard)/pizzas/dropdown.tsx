@@ -46,8 +46,8 @@ export default function Dropdown(
           {props.status === "published" ? "Dépublier" : "Publier"}
         </DropdownMenuCheckboxItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Delete</DropdownMenuItem>
+        <DropdownMenuItem disabled>Éditer</DropdownMenuItem>
+        <DropdownMenuItem disabled>Supprimer</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

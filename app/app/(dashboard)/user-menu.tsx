@@ -12,7 +12,13 @@ import {
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 
-export default function UserMenu({ avatarUrl }: { avatarUrl: string }) {
+export default function UserMenu({
+  avatarUrl,
+  email,
+}: {
+  avatarUrl: string;
+  email?: string;
+}) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -34,7 +40,7 @@ export default function UserMenu({ avatarUrl }: { avatarUrl: string }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuLabel>{email || "Anonymous"}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={async () => {

@@ -21,6 +21,7 @@ const config = {
       fontFamily: {
         brand: ["Syne", "sans-serif"],
         sans: ["Lato", "sans-serif"],
+        serif: ["var(--font-taviraj)", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -103,7 +103,12 @@ export async function Dashboard() {
                         />
                       )}
                     </TableCell>
-                    <TableCell className="font-medium">{pizza.name}</TableCell>
+                    <TableCell className="font-medium text-base flex flex-col">
+                      {pizza.name}
+                      <p className="text-xs font-light mt-2">
+                        {pizza.description}
+                      </p>
+                    </TableCell>
                     <TableCell>
                       <Badge
                         variant="outline"
@@ -132,11 +137,6 @@ export async function Dashboard() {
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter>
-          <div className="text-xs text-muted-foreground">
-            Showing <strong>1-10</strong> of <strong>32</strong> products
-          </div>
-        </CardFooter>
       </Card>
     </>
   );

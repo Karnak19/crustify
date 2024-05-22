@@ -3,8 +3,12 @@ import {
   PizzaIcon,
   ShieldCheckIcon,
   HomeIcon,
+  LineChart,
 } from "lucide-react";
 import Link from "next/link";
+
+import logo from "../logo.png";
+import Image from "next/image";
 
 const links = [
   {
@@ -20,6 +24,12 @@ const links = [
     icon: PizzaIcon,
   },
   {
+    name: "Analytics",
+    href: "/analytics",
+    description: "Vos statistiques de visites",
+    icon: LineChart,
+  },
+  {
     name: "Pro",
     href: "/pro",
     description: "Upgradez votre compte au plan Pro",
@@ -30,9 +40,9 @@ const links = [
 export default function DashboardNotFound() {
   return (
     <main className="mx-auto w-full max-w-7xl px-6 pb-16 pt-10 sm:pb-24 lg:px-8">
-      <img
+      <Image
         className="mx-auto h-10 w-auto sm:h-12"
-        src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
+        src={logo}
         alt="Your Company"
       />
       <div className="mx-auto mt-20 max-w-2xl text-center sm:mt-24">
