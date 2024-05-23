@@ -1,6 +1,5 @@
 "use server";
 
-import { getSession } from "@/lib/supabase/get-session";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -9,6 +8,7 @@ const pizzaInputSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
   price: z.coerce.number(),
+  base: z.enum(["tomato", "cream"]),
   picture: z.instanceof(File),
   website_id: z.coerce.number(),
 });

@@ -1,3 +1,5 @@
+import { Separator } from "./ui/separator";
+
 export function PizzasMenu({
   sections,
 }: {
@@ -33,19 +35,22 @@ export function PizzasMenu({
         </h2>
         <div className="grid gap-6">
           {items.map((item) => (
-            <div className="flex items-start gap-4" key={item.name}>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold font-serif">
-                  {item.name}
-                </h3>
-                <p className="text-gray-500">{item.description}</p>
+            <div key={item.name}>
+              <div className="flex items-start gap-4">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold font-serif">
+                    {item.name}
+                  </h3>
+                  <p className="text-gray-500">{item.description}</p>
+                </div>
+                <span className="font-medium">
+                  {item.price.toLocaleString("fr-FR", {
+                    style: "currency",
+                    currency: "EUR",
+                  })}
+                </span>
               </div>
-              <span className="font-medium">
-                {item.price.toLocaleString("fr-FR", {
-                  style: "currency",
-                  currency: "EUR",
-                })}
-              </span>
+              <Separator />
             </div>
           ))}
         </div>

@@ -38,7 +38,7 @@ export default async function DashboardLayout({
 
   const { data: website } = await supabase
     .from("websites")
-    .select("name, subdomain")
+    .select("name, subdomain, user_id:profiles (plan)")
     .eq("user_id", data.user?.id)
     .single();
 
@@ -115,7 +115,11 @@ export default async function DashboardLayout({
             </h1>
           </div>
           <div className="relative ml-auto flex-1 md:grow-0" />
-          <UserMenu avatarUrl={avatarUrl} email={data.user.email} />
+          <UserMenu
+            avatarUrl={avatarUrl}
+            email={data.user.email}
+            plan={website?.user_id?.plan}
+          />
         </header>
         {children}
       </div>

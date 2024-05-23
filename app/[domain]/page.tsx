@@ -24,7 +24,18 @@ export default async function SiteHomePage({
 
   return (
     <>
-      <PizzasMenu sections={[{ title: "Pizzas", items: pizzas || [] }]} />
+      <PizzasMenu
+        sections={[
+          {
+            title: "Base Tomate",
+            items: pizzas?.filter((pizza) => pizza.base === "tomato") || [],
+          },
+          {
+            title: "Base Crème",
+            items: pizzas?.filter((pizza) => pizza.base === "cream") || [],
+          },
+        ]}
+      />
     </>
   );
 }

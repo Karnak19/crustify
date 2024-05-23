@@ -99,7 +99,7 @@ export default async function SiteLayout({
       <Script
         defer
         data-domain={domain}
-        src="http://plausible.rover.vernouillet.dev/js/script.js"
+        src="https://plausible.rover.vernouillet.dev/js/script.js"
       />
 
       {/* {domain === `demo.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||

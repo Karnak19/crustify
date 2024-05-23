@@ -53,7 +53,7 @@ export default async function AnalyticsPage() {
       />
       <Script
         async
-        src="http://plausible.rover.vernouillet.dev/js/embed.host.js"
+        src="https://plausible.rover.vernouillet.dev/js/embed.host.js"
       />
     </Card>
   );

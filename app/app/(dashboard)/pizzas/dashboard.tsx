@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -83,6 +82,7 @@ export async function Dashboard() {
                 <TableHead>Nom</TableHead>
                 <TableHead>Statut</TableHead>
                 <TableHead>Prix</TableHead>
+                <TableHead>Base</TableHead>
                 <TableHead>
                   <span className="sr-only">Actions</span>
                 </TableHead>
@@ -128,6 +128,7 @@ export async function Dashboard() {
                         currency: "EUR",
                       })}
                     </TableCell>
+                    <TableCell>{pizza.base}</TableCell>
                     <TableCell>
                       <Dropdown {...pizza} />
                     </TableCell>

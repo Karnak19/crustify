@@ -55,3 +55,51 @@ export async function createWebsite(formData: FormData) {
 }
 
 export async function update() {}
+
+const addLogoSchema = z.object({
+  file: z.instanceof(File),
+});
+
+export async function addLogo(_: unknown, formData: FormData) {
+  const supabase = createClient();
+
+  const { data: userData } = await supabase.auth.getUser();
+
+  if (!userData.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const { data: website } = await supabase
+    .from("websites")
+    .select("id")
+    .eq("user_id", userData.user.id)
+    .single();
+
+  if (!website) {
+    return { success: false, error: "Website not found" };
+  }
+
+  const data = addLogoSchema.parse(Object.fromEntries(formData.entries()));
+
+  const { data: imgData, error } = await supabase.storage
+    .from("pizzas")
+    .upload(
+      `${userData.user.id}/${website.id}/${data.file.name.replace(
+        /\s/g,
+        "-"
+      )}-${Date.now()}`,
+      data.file
+    );
+
+  // upsert website with logo path
+  await supabase
+    .from("websites")
+    .update({ logo: imgData?.path })
+    .eq("id", website.id);
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true };
+}

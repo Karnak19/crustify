@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 
 import { createPizza } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export function CreatePizzaForm() {
   return (
@@ -21,11 +22,24 @@ export function CreatePizzaForm() {
         <Textarea name="description" />
       </div>
       <div className="grid gap-2">
-        <Label>Price:</Label>
+        <Label>Prix:</Label>
         <Input type="number" name="price" />
       </div>
+      <div>
+        <Label>Base</Label>
+        <RadioGroup name="base">
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="tomato" id="tomato" />
+            <Label htmlFor="tomato">Tomate</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="cream" id="cream" />
+            <Label htmlFor="cream">Crème</Label>
+          </div>
+        </RadioGroup>
+      </div>
       <div className="grid gap-2">
-        <Label>Image:</Label>
+        <Label>Photo:</Label>
         <Input type="file" name="picture" />
       </div>
 

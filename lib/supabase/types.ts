@@ -40,6 +40,7 @@ export type Database = {
       }
       pizzas: {
         Row: {
+          base: Database["public"]["Enums"]["pizza_base"]
           created_at: string
           description: string | null
           id: number
@@ -50,6 +51,7 @@ export type Database = {
           website_id: number
         }
         Insert: {
+          base?: Database["public"]["Enums"]["pizza_base"]
           created_at?: string
           description?: string | null
           id?: number
@@ -60,6 +62,7 @@ export type Database = {
           website_id: number
         }
         Update: {
+          base?: Database["public"]["Enums"]["pizza_base"]
           created_at?: string
           description?: string | null
           id?: number
@@ -151,6 +154,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      pizza_base: "tomato" | "cream"
       status: "draft" | "published"
     }
     CompositeTypes: {
