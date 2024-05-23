@@ -13,7 +13,7 @@ export function PizzasMenu({
       <h1 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl font-serif px-4 md:px-6 lg:px-8">
         Menu
       </h1>
-      <div className="grid md:grid-cols-2 divide-x divide-border">
+      <div className="grid md:grid-cols-2 divide-x divide-border gap-y-6 md:gap-y-0">
         {sections.map((section) => (
           <PizzasMenuSection key={section.title} {...section} />
         ))}
