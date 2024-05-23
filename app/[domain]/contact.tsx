@@ -83,7 +83,8 @@ export function Contact({
         </div>
         <iframe
           title="Google Maps"
-          style={{ border: 0, width: "100%", height: "100%" }}
+          style={{ border: 0 }}
+          className="w-full h-96 lg:h-full lg:w-full"
           loading="lazy"
           allowFullScreen
           referrerPolicy="no-referrer-when-downgrade"
