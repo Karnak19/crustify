@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import { getSiteData } from "@/lib/supabase/get-site-data";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
 import Script from "next/script";
+import { Contact } from "./contact";
 
 export const dynamic = "force-static";
 export const revalidate = 86400; // 24 hours
@@ -95,6 +96,11 @@ export default async function SiteLayout({
       </div>
 
       {children}
+      <Contact
+        name={data.name ?? ""}
+        address={data.address}
+        phone={data.phone}
+      />
 
       <Script
         defer

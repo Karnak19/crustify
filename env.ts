@@ -14,6 +14,8 @@ export const env = createEnv({
 
     NEXT_PUBLIC_ROOT_DOMAIN: z.string().default("localhost:3000"),
     NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX: z.string().optional(),
+
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: z.string().optional(),
   },
   // If you're using Next.js < 13.4.4, you'll need to specify the runtimeEnv manually
   runtimeEnv: {
@@ -28,6 +30,9 @@ export const env = createEnv({
     NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
     NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX:
       process.env.NEXT_PUBLIC_VERCEL_DEPLOYMENT_SUFFIX,
+
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
+      process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
   },
   // For Next.js >= 13.4.4, you only need to destructure client variables:
   // experimental__runtimeEnv: {

@@ -11,7 +11,7 @@ export function getSiteData(domain: string) {
 
   return createClient()
     .from("websites")
-    .select("name, logo, subdomain")
+    .select("name, logo, subdomain, address, phone")
     .eq("subdomain", eq)
     .single();
 }

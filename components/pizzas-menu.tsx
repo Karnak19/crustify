@@ -9,7 +9,7 @@ export function PizzasMenu({
   }[];
 }) {
   return (
-    <main className="max-w-[100ch] mx-auto py-12 lg:py-16 bg-card shadow-lg rounded-lg mt-20">
+    <main className="max-w-[100ch] mx-auto py-12 lg:py-16 bg-card shadow-lg rounded-lg my-20">
       <h1 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl font-serif px-4 md:px-6 lg:px-8">
         Menu
       </h1>

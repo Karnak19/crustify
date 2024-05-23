@@ -110,28 +110,34 @@ export type Database = {
       }
       websites: {
         Row: {
+          address: string | null
           created_at: string
           id: number
           logo: string | null
           name: string | null
+          phone: string | null
           plausible_shared_link: string | null
           subdomain: string
           user_id: string
         }
         Insert: {
+          address?: string | null
           created_at?: string
           id?: number
           logo?: string | null
           name?: string | null
+          phone?: string | null
           plausible_shared_link?: string | null
           subdomain: string
           user_id: string
         }
         Update: {
+          address?: string | null
           created_at?: string
           id?: number
           logo?: string | null
           name?: string | null
+          phone?: string | null
           plausible_shared_link?: string | null
           subdomain?: string
           user_id?: string
