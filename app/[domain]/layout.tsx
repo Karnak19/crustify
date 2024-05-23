@@ -73,9 +73,9 @@ export default async function SiteLayout({
   // }
 
   return (
-    <div>
-      <div className="ease left-0 right-0 top-0 z-30 flex h-16 bg-white transition-all duration-150 dark:bg-black dark:text-white">
-        <div className="mx-auto flex h-full max-w-screen-xl items-center justify-center space-x-5 px-10 sm:px-20">
+    <>
+      <div className="absolute ease left-0 right-0 top-0 z-30 flex h-16 bg-transparent transition-all duration-150">
+        <div className="flex h-full max-w-screen-xl items-center space-x-5 px-10 sm:px-20">
           <Link href="/" className="flex items-center justify-center">
             <div className="inline-block h-8 w-8 overflow-hidden rounded-full align-middle">
               {data.logo && (
@@ -94,7 +94,7 @@ export default async function SiteLayout({
         </div>
       </div>
 
-      <div className="mt-20">{children}</div>
+      {children}
 
       <Script
         defer
@@ -108,6 +108,6 @@ export default async function SiteLayout({
       ) : (
         <ReportAbuse />
       )} */}
-    </div>
+    </>
   );
 }

@@ -44,6 +44,17 @@ export async function Dashboard() {
     }
   };
 
+  const base = (base: string) => {
+    switch (base) {
+      case "tomato":
+        return "Tomate";
+      case "cream":
+        return "Crème";
+      default:
+        return "Unknown";
+    }
+  };
+
   return (
     <>
       <div className="flex items-center">
@@ -128,7 +139,18 @@ export async function Dashboard() {
                         currency: "EUR",
                       })}
                     </TableCell>
-                    <TableCell>{pizza.base}</TableCell>
+                    <TableCell>
+                      <Badge
+                        className={cn({
+                          "bg-red-200 text-red-800 hover:bg-red-200":
+                            pizza.base === "tomato",
+                          "bg-amber-100 text-foreground hover:bg-amber-100":
+                            pizza.base === "cream",
+                        })}
+                      >
+                        {base(pizza.base)}
+                      </Badge>
+                    </TableCell>
                     <TableCell>
                       <Dropdown {...pizza} />
                     </TableCell>

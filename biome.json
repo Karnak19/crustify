@@ -17,6 +17,9 @@
 			},
 			"performance": {
 				"noBarrelFile": "error"
+			},
+			"complexity": {
+				"noForEach": "off"
 			}
 		}
 	},

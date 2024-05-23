@@ -9,5 +9,9 @@ export function getSiteData(domain: string) {
 
   const eq = isSubdomain ? domain.split(".")[0] : domain;
 
-  return createClient().from("websites").select().eq("subdomain", eq).single();
+  return createClient()
+    .from("websites")
+    .select("name, logo, subdomain")
+    .eq("subdomain", eq)
+    .single();
 }
