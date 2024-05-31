@@ -44,7 +44,7 @@ export default async function SiteHomePage({
             speed="slow"
             items={
               pizzas
-                .filter((p) => p.base === "tomato")
+                .filter((p) => p.base === "tomato" && p.picture)
                 .map((p) => {
                   return {
                     image: getImageUrl({ path: p.picture }),
@@ -65,7 +65,7 @@ export default async function SiteHomePage({
             direction="right"
             items={
               pizzas
-                .filter((p) => p.base === "cream")
+                .filter((p) => p.base === "cream" && p.picture)
                 .map((p) => {
                   return {
                     image: getImageUrl({ path: p.picture }),
