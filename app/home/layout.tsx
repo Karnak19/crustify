@@ -12,7 +12,7 @@ export default async function SiteLayout({
       <Script
         defer
         data-domain="crustify.fr"
-        src="http://plausible.rover.vernouillet.dev/js/script.js"
+        src="https://plausible.rover.vernouillet.dev/js/script.js"
       />
     </>
   );
