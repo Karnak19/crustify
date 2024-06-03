@@ -102,6 +102,19 @@ export default async function SiteLayout({
         phone={data.phone}
       />
 
+      <footer className="p-4 bg-card flex justify-between items-center text-muted-foreground">
+        {/* <Separator /> */}
+        <div className="italic text-sm tracking-wider">
+          Powered by{" "}
+          <a
+            className="not-italic font-semibold font-brand tracking-normal text-foreground"
+            href="https://crustify.fr"
+          >
+            Crustify
+          </a>
+        </div>
+      </footer>
+
       <Script
         defer
         data-domain={domain}
