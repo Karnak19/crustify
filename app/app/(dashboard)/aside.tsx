@@ -7,13 +7,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import Nav from "./nav";
+import NavList from "./nav-list";
 
 export default function Aside({ url }: { url: string }) {
   return (
     <TooltipProvider>
-      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-card sm:flex">
-        <Nav url={url} />
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-14 flex-col border-r bg-card sm:flex">
+        <NavList url={url} />
         <nav className="mt-auto flex flex-col items-center gap-4 px-2 py-4">
           <Tooltip>
             <TooltipTrigger asChild>

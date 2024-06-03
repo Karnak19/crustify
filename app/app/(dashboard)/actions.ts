@@ -1,8 +1,9 @@
 "use server";
 
-import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+
+import { createClient } from "@/lib/supabase/server";
 
 const createWebsiteSchema = z.object({
   name: z.string(),
@@ -56,6 +57,10 @@ export async function createWebsite(formData: FormData) {
 
 export async function update() {}
 
+// ------------------------------------------------------------
+// Add logo form
+// ------------------------------------------------------------
+
 const addLogoSchema = z.object({
   file: z.instanceof(File),
 });
@@ -96,6 +101,45 @@ export async function addLogo(_: unknown, formData: FormData) {
     .from("websites")
     .update({ logo: imgData?.path })
     .eq("id", website.id);
+
+  if (error) {
+    return { success: false, error };
+  }
+
+  return { success: true };
+}
+
+// ------------------------------------------------------------
+// Add contact form
+// ------------------------------------------------------------
+
+const addContactSchema = z.object({
+  websiteId: z.string(),
+  phone: z.string(),
+  address: z.string(),
+  zip: z.string(),
+  city: z.string(),
+});
+
+export async function addContact(_: unknown, formData: FormData) {
+  const supabase = createClient();
+
+  const { data: userData } = await supabase.auth.getUser();
+
+  if (!userData.user) {
+    return { success: false, error: "Unauthorized" };
+  }
+
+  const { phone, ...data } = addContactSchema.parse(
+    Object.fromEntries(formData.entries())
+  );
+
+  const address = `${data.address.trim()}, ${data.zip.trim()} ${data.city.trim()}`;
+
+  const { error } = await supabase
+    .from("websites")
+    .update({ phone, address })
+    .eq("id", data.websiteId);
 
   if (error) {
     return { success: false, error };

@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  ExternalLink,
-  Home,
-  LineChart,
-  PizzaIcon,
-  ShieldCheck,
-} from "lucide-react";
-import NavItem from "./nav-item";
+import { ExternalLink } from "lucide-react";
 import {
   Tooltip,
   TooltipTrigger,
@@ -15,30 +8,10 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-const nav = [
-  {
-    title: "Dashboard",
-    path: "/",
-    icon: Home,
-  },
-  {
-    title: "Pizzas",
-    path: "/pizzas",
-    icon: PizzaIcon,
-  },
-  {
-    title: "Analytics",
-    path: "/analytics",
-    icon: LineChart,
-  },
-  {
-    title: "Pro",
-    path: "/pro",
-    icon: ShieldCheck,
-  },
-];
+import NavItem from "./nav-item";
+import { nav } from "./nav";
 
-export default function Nav({ url }: { url: string }) {
+export default function NavList({ url }: { url: string }) {
   return (
     <nav className="flex flex-col items-center gap-4 px-2 py-4">
       {nav.map((item) => (

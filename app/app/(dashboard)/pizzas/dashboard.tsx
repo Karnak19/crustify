@@ -75,7 +75,7 @@ export async function Dashboard() {
           </Dialog>
         </div>
       </div>
-      <Card>
+      <Card className="overflow-auto">
         <CardHeader>
           <CardTitle>Pizzas</CardTitle>
           <CardDescription>
