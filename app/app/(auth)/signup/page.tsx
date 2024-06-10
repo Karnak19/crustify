@@ -2,30 +2,32 @@
 
 import type { ChangeEvent, RefObject } from "react";
 import { useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
+import { LoaderIcon } from "lucide-react";
+import { useServerAction } from "zsa-react";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
-import { signup } from "../login/actions";
-import { useFormState, useFormStatus } from "react-dom";
-import { useRouter } from "next/navigation";
-import { LoaderIcon } from "lucide-react";
+import { signUpAction } from "../login/actions";
 
 export default function SignupPage() {
   const router = useRouter();
   const passwordRef = useRef<HTMLInputElement>(null);
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const [state, formAction] = useFormState(signup, null);
+
+  const { execute, isSuccess } = useServerAction(signUpAction);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run on state changes
   useEffect(() => {
-    if (state?.success) {
+    if (isSuccess) {
       router.push("/");
     }
-  }, [state]);
+  }, [isSuccess]);
 
   const onConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
     const password = passwordRef.current?.value;
@@ -47,7 +49,7 @@ export default function SignupPage() {
   };
 
   return (
-    <form className="mx-auto grid w-[350px] gap-6" action={formAction}>
+    <form className="mx-auto grid w-[350px] gap-6" action={execute}>
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Inscription</h1>
         <p className="text-muted-foreground">

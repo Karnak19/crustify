@@ -1,30 +1,32 @@
 "use client";
 import { useEffect } from "react";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useServerAction } from "zsa-react";
+import { LoaderIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
-import { login } from "./actions";
-import { LoaderIcon } from "lucide-react";
+import { loginAction } from "./actions";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [state, formAction] = useFormState(login, null);
+
+  const { execute, isSuccess, error } = useServerAction(loginAction);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run on state changes
   useEffect(() => {
-    if (state?.success) {
+    if (isSuccess) {
       router.push("/");
     }
-  }, [state]);
+  }, [isSuccess]);
 
   return (
-    <form className="mx-auto grid w-[350px] gap-6" action={formAction}>
+    <form className="mx-auto grid w-[350px] gap-6" action={execute}>
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Connexion</h1>
         <p className="text-muted-foreground">
@@ -35,7 +37,7 @@ export default function LoginPage() {
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
-            className={cn({ "ring-2 ring-red-500": state?.error })}
+            className={cn({ "ring-2 ring-red-500": !!error })}
             id="email"
             type="email"
             name="email"
@@ -54,14 +56,19 @@ export default function LoginPage() {
             </Link>
           </div>
           <Input
-            className={cn({ "ring-2 ring-red-500": state?.error })}
+            className={cn({ "ring-2 ring-red-500": !!error })}
             id="password"
             name="password"
             type="password"
             required
           />
-          {state?.error && (
-            <p className="text-red-500 text-sm">{state.error}</p>
+          {!!error?.fieldErrors?.password && (
+            <p className="text-red-500">
+              {error?.fieldErrors?.password?.join(", ")}
+            </p>
+          )}
+          {!!error && !error.fieldErrors && (
+            <p className="text-red-500">{error.message}</p>
           )}
         </div>
         <SubmitButton />

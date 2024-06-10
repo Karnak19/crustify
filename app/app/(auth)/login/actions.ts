@@ -2,60 +2,54 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ZSAError, createServerAction } from "zsa";
 
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
 
-const inputSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
+export const loginAction = createServerAction()
+  .input(
+    z.object({
+      email: z.string(),
+      password: z.string().min(6, "Minimum 6 caractères"),
+    }),
+    {
+      type: "formData",
+    }
+  )
+  .handler(async ({ input }) => {
+    const supabase = createClient();
 
-export async function login(_: unknown, formData: FormData) {
-  const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword(input);
 
-  const input = inputSchema.safeParse({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    if (error) {
+      throw new ZSAError("ERROR", "Email ou mot de passe incorrect");
+    }
+
+    revalidatePath("/", "layout");
+    return null;
   });
 
-  if (!input.success) {
-    return { error: "Veuillez entrer un email et un mot de passe valides" };
-  }
+export const signUpAction = createServerAction()
+  .input(z.object({ email: z.string(), password: z.string() }), {
+    type: "formData",
+  })
+  .handler(async ({ input }) => {
+    const supabase = createClient();
 
-  const { error } = await supabase.auth.signInWithPassword(input.data);
+    const { error } = await supabase.auth.signUp({
+      ...input,
+      options: {
+        emailRedirectTo: `${
+          process.env.NODE_ENV === "development" ? "http" : "https"
+        }://app.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
+      },
+    });
 
-  if (error) {
-    return { error: "Email ou mot de passe invalide(s)" };
-  }
+    if (error) {
+      throw error.message;
+    }
 
-  revalidatePath("/", "layout");
-  return { success: true };
-}
-
-export async function signup(_: unknown, formData: FormData) {
-  const supabase = createClient();
-
-  const data = inputSchema.safeParse({
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
+    revalidatePath("/", "layout");
+    return null;
   });
-
-  if (!data.success) {
-    return { error: "Veuillez entrer un email et un mot de passe valides" };
-  }
-
-  const { error } = await supabase.auth.signUp({
-    ...data.data,
-    options: {
-      emailRedirectTo: `https://app.${env.NEXT_PUBLIC_ROOT_DOMAIN}`,
-    },
-  });
-
-  if (error) {
-    return { error: error.message };
-  }
-
-  revalidatePath("/", "layout");
-  return { success: true };
-}
