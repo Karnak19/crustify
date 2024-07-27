@@ -125,7 +125,7 @@ export const InfiniteMovingCards = ({
                   src={item.image}
                   sizes="450px"
                   alt={item.name}
-                  layout="fill"
+                  fill
                 />
               </div>
               <div className="space-y-2">

@@ -1,13 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { addContact } from "./actions";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormStatus } from "react-dom";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Building, LoaderIcon, Phone } from "lucide-react";
+import { useServerAction } from "zsa-react";
+
+import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Building, LoaderIcon, Phone } from "lucide-react";
+
+import { addContactAction } from "./actions";
+import { cn } from "@/lib/utils";
 
 type AddContactFormProps = {
   websiteId: number;
@@ -18,18 +22,21 @@ type AddContactFormProps = {
 };
 
 export function AddContactForm(props: AddContactFormProps) {
-  const [state, action] = useFormState(addContact, null);
   const router = useRouter();
+  const { execute, isSuccess, error } = useServerAction(addContactAction);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+  // biome-ignore lint/correctness/useExhaustiveDependencies: no need to run this effect on router changes
   useEffect(() => {
-    if (state?.success) {
+    if (isSuccess) {
       router.refresh();
     }
-  }, [state]);
+  }, [isSuccess]);
 
   return (
-    <form className="grid gap-4" action={action}>
+    <form
+      className={cn("grid gap-4", { "ring-2 ring-red-500": !!error })}
+      action={execute}
+    >
       <div className="flex flex-col gap-1">
         <Label htmlFor="phone" className="inline-flex items-center">
           <Phone className="size-3 mr-1" />
@@ -75,6 +82,9 @@ export function AddContactForm(props: AddContactFormProps) {
       </div>
       <input type="hidden" name="websiteId" value={props.websiteId} />
       <SubmitButton />
+      {error?.message ? (
+        <p className="text-red-500 text-sm">{error.message}</p>
+      ) : null}
     </form>
   );
 }

@@ -57,18 +57,18 @@ export function Hero() {
           <div className="mx-auto max-w-2xl gap-x-14 lg:mx-0 lg:flex lg:max-w-none lg:items-center">
             <div className="relative w-full max-w-xl lg:shrink-0 xl:max-w-2xl">
               <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
-                Créez le site de votre pizzeria en quelques clics
+                Créez le site web de votre pizzeria facilement
               </h1>
               <p className="mt-6 text-lg leading-8 text-gray-600 sm:max-w-md lg:max-w-none">
-                Créez un site web pour votre pizzeria en quelques clics. Gérez
-                votre menu, et c'est parti !
+                Créez un site web magnifique pour votre pizzeria en quelques
+                minutes. Aucun codage requis.
               </p>
               <div className="mt-10 flex items-center gap-x-6">
                 <a
                   href={`https://app.${env.NEXT_PUBLIC_ROOT_DOMAIN}`}
                   className="rounded-md bg-primary px-3.5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
-                  Commencer !
+                  Commencer gratuitement
                 </a>
               </div>
             </div>
