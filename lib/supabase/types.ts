@@ -14,19 +14,19 @@ export type Database = {
           created_at: string
           id: number
           name: string
-          website_id: number
+          website_id: number | null
         }
         Insert: {
           created_at?: string
           id?: number
           name: string
-          website_id: number
+          website_id?: number | null
         }
         Update: {
           created_at?: string
           id?: number
           name?: string
-          website_id?: number
+          website_id?: number | null
         }
         Relationships: [
           {
@@ -78,6 +78,39 @@ export type Database = {
             columns: ["website_id"]
             isOneToOne: false
             referencedRelation: "websites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pizzas_ingredients: {
+        Row: {
+          created_at: string
+          ingredient_id: number
+          pizza_id: number
+        }
+        Insert: {
+          created_at?: string
+          ingredient_id: number
+          pizza_id: number
+        }
+        Update: {
+          created_at?: string
+          ingredient_id?: number
+          pizza_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pizzas_ingredients_ingredient_id_fkey"
+            columns: ["ingredient_id"]
+            isOneToOne: false
+            referencedRelation: "ingredients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pizzas_ingredients_pizza_id_fkey"
+            columns: ["pizza_id"]
+            isOneToOne: false
+            referencedRelation: "pizzas"
             referencedColumns: ["id"]
           },
         ]
