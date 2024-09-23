@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 
-import { getSiteData } from "@/lib/supabase/get-site-data";
 import { getPizzas } from "@/lib/supabase/get-pizzas";
 import { Hero } from "./hero";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
+import { createClient } from "@/lib/supabase/server";
+import { getWebsiteData } from "@/lib/supabase/queries";
 
 export const dynamic = "force-static";
 export const revalidate = 86400; // 24 hours
@@ -15,12 +16,14 @@ export default async function SiteHomePage({
   params: { domain: string };
 }) {
   const domain = decodeURIComponent(params.domain);
+  const supabase = createClient();
   const [site, pizzas] = await Promise.all([
-    getSiteData(domain),
+    getWebsiteData(supabase, domain),
     getPizzas(domain),
   ]);
+  console.log("🚀 ~ site:", site);
 
-  if (!site.data) {
+  if (!site) {
     notFound();
   }
   const base = (base: string) => {
@@ -36,7 +39,8 @@ export default async function SiteHomePage({
 
   return (
     <>
-      <Hero {...site.data} />
+      <Hero {...site} />
+
       {pizzas ? (
         <>
           <InfiniteMovingCards

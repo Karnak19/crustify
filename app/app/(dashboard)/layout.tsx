@@ -11,6 +11,7 @@ import Aside from "./aside";
 import { redirect } from "next/navigation";
 import UserMenu from "./user-menu";
 import { nav } from "./nav";
+import { getSubscription } from "@/lib/supabase/queries";
 
 export const metadata = {
   title: "Dashboard | Crustify",
@@ -29,6 +30,7 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const subscription = await getSubscription(supabase);
   const { data: website } = await supabase
     .from("websites")
     .select("name, subdomain, user_id:profiles (plan)")
@@ -89,7 +91,7 @@ export default async function DashboardLayout({
           <UserMenu
             avatarUrl={avatarUrl}
             email={data.user.email}
-            plan={website?.user_id?.plan}
+            subscription={!!subscription}
           />
         </header>
         {children}

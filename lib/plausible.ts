@@ -89,7 +89,7 @@ export async function createWebsiteAnalyticsAction(
       plausible_shared_link: url,
     });
 
-    revalidatePath("/analytics");
+    revalidatePath("/app/analytics");
     return { success: true };
   } catch (error) {
     return { error: (error as Error).message };

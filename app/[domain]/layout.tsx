@@ -2,10 +2,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { getSiteData } from "@/lib/supabase/get-site-data";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
 import Script from "next/script";
 import { Contact } from "./contact";
+import { getTheme, getWebsiteData } from "@/lib/supabase/queries";
+import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-static";
 export const revalidate = 86400; // 24 hours
@@ -16,25 +17,26 @@ export async function generateMetadata({
   params: { domain: string };
 }): Promise<Metadata | null> {
   const domain = decodeURIComponent(params.domain);
-  const { data } = await getSiteData(domain);
+  const supabase = createClient();
+  const website = await getWebsiteData(supabase, domain);
 
-  if (!data?.name) {
+  if (!website?.name) {
     return null;
   }
 
-  const image = data.logo ? getImageUrl({ path: data.logo }) : undefined;
+  const image = website.logo ? getImageUrl({ path: website.logo }) : undefined;
 
   return {
-    title: data.name,
+    title: website.name,
     description: "",
     openGraph: {
-      title: data.name,
+      title: website.name,
       description: "",
       ...(image && { images: [image] }),
     },
     twitter: {
       card: "summary_large_image",
-      title: data.name,
+      title: website.name,
       description: "",
       ...(image && { image: [image] }),
     },
@@ -58,9 +60,12 @@ export default async function SiteLayout({
   children: ReactNode;
 }) {
   const domain = decodeURIComponent(params.domain);
-  const { data } = await getSiteData(domain);
+  const supabase = createClient();
+  const website = await getWebsiteData(supabase, domain);
 
-  if (!data) {
+  const { themes: theme } = website;
+
+  if (!website) {
     notFound();
   }
 
@@ -75,21 +80,30 @@ export default async function SiteLayout({
 
   return (
     <>
-      <div className="absolute ease left-0 right-0 top-0 z-30 flex h-16 bg-transparent transition-all duration-150">
+      <style global>{`
+        :root {
+          --background: ${theme.background};
+          --foreground: ${theme.foreground};
+          --muted-foreground: ${theme.foreground_muted};
+          --primary: ${theme.primary_color};
+          --secondary: ${theme.secondary};
+        }
+      `}</style>
+      <div className="absolute ease left-0 right-0 top-0 z-30 flex h-16 transition-all duration-150">
         <div className="flex h-full max-w-screen-xl items-center space-x-5 px-10 sm:px-20">
           <Link href="/" className="flex items-center justify-center">
             <div className="inline-block h-8 w-8 overflow-hidden rounded-full align-middle">
-              {data.logo && (
+              {website.logo && (
                 <img
-                  alt={data.name || ""}
+                  alt={website.name || ""}
                   height={40}
-                  src={getImageUrl({ path: data.logo })}
+                  src={getImageUrl({ path: website.logo })}
                   width={40}
                 />
               )}
             </div>
             <span className="ml-3 inline-block truncate font-title font-medium">
-              {data.name}
+              {website.name}
             </span>
           </Link>
         </div>
@@ -97,13 +111,12 @@ export default async function SiteLayout({
 
       {children}
       <Contact
-        name={data.name ?? ""}
-        address={data.address}
-        phone={data.phone}
+        name={website.name ?? ""}
+        address={website.address}
+        phone={website.phone}
       />
 
       <footer className="p-4 bg-card flex justify-between items-center text-muted-foreground">
-        {/* <Separator /> */}
         <div className="italic text-sm tracking-wider">
           Powered by{" "}
           <a
@@ -120,13 +133,6 @@ export default async function SiteLayout({
         data-domain={domain}
         src="https://plausible.rover.vernouillet.dev/js/script.js"
       />
-
-      {/* {domain === `demo.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}` ||
-      domain === "platformize.co" ? (
-        <CTA />
-      ) : (
-        <ReportAbuse />
-      )} */}
     </>
   );
 }

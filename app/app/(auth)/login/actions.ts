@@ -6,6 +6,7 @@ import { ZSAError, createServerAction } from "zsa";
 
 import { createClient } from "@/lib/supabase/server";
 import { env } from "@/env";
+import { redirect } from "next/navigation";
 
 export const loginAction = createServerAction()
   .input(
@@ -26,8 +27,7 @@ export const loginAction = createServerAction()
       throw new ZSAError("ERROR", "Email ou mot de passe incorrect");
     }
 
-    revalidatePath("/", "layout");
-    return null;
+    return redirect("/");
   });
 
 export const signUpAction = createServerAction()
@@ -37,7 +37,7 @@ export const signUpAction = createServerAction()
   .handler(async ({ input }) => {
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signUp({
+    const { error, data } = await supabase.auth.signUp({
       ...input,
       options: {
         emailRedirectTo: `${
@@ -47,9 +47,11 @@ export const signUpAction = createServerAction()
     });
 
     if (error) {
-      throw error.message;
+      throw new ZSAError("INTERNAL_SERVER_ERROR", error.message);
     }
 
-    revalidatePath("/", "layout");
+    console.log("🚀 ~ .handler ~ data:", data);
+
+    revalidatePath("/app", "layout");
     return null;
   });

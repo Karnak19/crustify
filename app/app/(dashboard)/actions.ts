@@ -34,7 +34,7 @@ export async function createWebsite(formData: FormData) {
     .insert({ ...data, user_id: userData.user.id });
   console.log("🚀 ~ createWebsite ~ error:", error);
 
-  revalidatePath("/");
+  revalidatePath("/app");
 
   // const { data: imgData, error } = await supabase.storage
   //   .from("websites")
@@ -52,8 +52,6 @@ export async function createWebsite(formData: FormData) {
   //   ...toInsert,
   //   logo: imgData?.path,
   // });
-
-  // revalidatePath("/websites");
 }
 
 export async function update() {}

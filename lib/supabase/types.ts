@@ -115,21 +115,107 @@ export type Database = {
           },
         ]
       }
-      profiles: {
+      prices: {
         Row: {
-          created_at: string
+          active: boolean | null
+          currency: string | null
+          description: string | null
           id: string
-          plan: string | null
+          interval: Database["public"]["Enums"]["pricing_plan_interval"] | null
+          interval_count: number | null
+          metadata: Json | null
+          product_id: string | null
+          trial_period_days: number | null
+          type: Database["public"]["Enums"]["pricing_type"] | null
+          unit_amount: number | null
         }
         Insert: {
-          created_at?: string
+          active?: boolean | null
+          currency?: string | null
+          description?: string | null
           id: string
-          plan?: string | null
+          interval?: Database["public"]["Enums"]["pricing_plan_interval"] | null
+          interval_count?: number | null
+          metadata?: Json | null
+          product_id?: string | null
+          trial_period_days?: number | null
+          type?: Database["public"]["Enums"]["pricing_type"] | null
+          unit_amount?: number | null
         }
         Update: {
+          active?: boolean | null
+          currency?: string | null
+          description?: string | null
+          id?: string
+          interval?: Database["public"]["Enums"]["pricing_plan_interval"] | null
+          interval_count?: number | null
+          metadata?: Json | null
+          product_id?: string | null
+          trial_period_days?: number | null
+          type?: Database["public"]["Enums"]["pricing_type"] | null
+          unit_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prices_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products: {
+        Row: {
+          active: boolean | null
+          description: string | null
+          id: string
+          image: string | null
+          metadata: Json | null
+          name: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          description?: string | null
+          id: string
+          image?: string | null
+          metadata?: Json | null
+          name?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          description?: string | null
+          id?: string
+          image?: string | null
+          metadata?: Json | null
+          name?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          billing_address: Json | null
+          created_at: string
+          id: string
+          payment_method: Json | null
+          plan: string | null
+          stripe_customer_id: string | null
+        }
+        Insert: {
+          billing_address?: Json | null
+          created_at?: string
+          id: string
+          payment_method?: Json | null
+          plan?: string | null
+          stripe_customer_id?: string | null
+        }
+        Update: {
+          billing_address?: Json | null
           created_at?: string
           id?: string
+          payment_method?: Json | null
           plan?: string | null
+          stripe_customer_id?: string | null
         }
         Relationships: [
           {
@@ -141,6 +227,108 @@ export type Database = {
           },
         ]
       }
+      subscriptions: {
+        Row: {
+          cancel_at: string | null
+          cancel_at_period_end: boolean | null
+          canceled_at: string | null
+          created: string
+          current_period_end: string
+          current_period_start: string
+          ended_at: string | null
+          id: string
+          metadata: Json | null
+          price_id: string | null
+          quantity: number | null
+          status: Database["public"]["Enums"]["subscription_status"] | null
+          trial_end: string | null
+          trial_start: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created?: string
+          current_period_end?: string
+          current_period_start?: string
+          ended_at?: string | null
+          id: string
+          metadata?: Json | null
+          price_id?: string | null
+          quantity?: number | null
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          trial_end?: string | null
+          trial_start?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_at?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created?: string
+          current_period_end?: string
+          current_period_start?: string
+          ended_at?: string | null
+          id?: string
+          metadata?: Json | null
+          price_id?: string | null
+          quantity?: number | null
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          trial_end?: string | null
+          trial_start?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_price_id_fkey"
+            columns: ["price_id"]
+            isOneToOne: false
+            referencedRelation: "prices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      themes: {
+        Row: {
+          background: string
+          created_at: string
+          foreground: string
+          foreground_muted: string
+          id: number
+          name: string
+          primary_color: string
+          secondary: string
+        }
+        Insert: {
+          background: string
+          created_at?: string
+          foreground: string
+          foreground_muted: string
+          id?: number
+          name: string
+          primary_color: string
+          secondary: string
+        }
+        Update: {
+          background?: string
+          created_at?: string
+          foreground?: string
+          foreground_muted?: string
+          id?: number
+          name?: string
+          primary_color?: string
+          secondary?: string
+        }
+        Relationships: []
+      }
       websites: {
         Row: {
           address: string | null
@@ -151,6 +339,7 @@ export type Database = {
           phone: string | null
           plausible_shared_link: string | null
           subdomain: string
+          theme_id: number
           user_id: string
         }
         Insert: {
@@ -162,6 +351,7 @@ export type Database = {
           phone?: string | null
           plausible_shared_link?: string | null
           subdomain: string
+          theme_id?: number
           user_id: string
         }
         Update: {
@@ -173,9 +363,17 @@ export type Database = {
           phone?: string | null
           plausible_shared_link?: string | null
           subdomain?: string
+          theme_id?: number
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "websites_theme_id_fkey"
+            columns: ["theme_id"]
+            isOneToOne: false
+            referencedRelation: "themes"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "websites_user_id_fkey"
             columns: ["user_id"]
@@ -194,7 +392,18 @@ export type Database = {
     }
     Enums: {
       pizza_base: "tomato" | "cream"
+      pricing_plan_interval: "day" | "week" | "month" | "year"
+      pricing_type: "one_time" | "recurring"
       status: "draft" | "published"
+      subscription_status:
+        | "trialing"
+        | "active"
+        | "canceled"
+        | "incomplete"
+        | "incomplete_expired"
+        | "past_due"
+        | "unpaid"
+        | "paused"
     }
     CompositeTypes: {
       [_ in never]: never

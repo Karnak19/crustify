@@ -24,7 +24,7 @@ export async function createPizza(formData: FormData) {
 
   const website = await supabase
     .from("websites")
-    .select("id")
+    .select("id, subdomain")
     .eq("user_id", userData.user?.id)
     .single();
 
@@ -56,7 +56,9 @@ export async function createPizza(formData: FormData) {
     picture: imgData?.path,
   });
 
-  revalidatePath("/pizzas");
+  revalidatePath("/app/pizzas");
+  revalidatePath(`/${website.data?.subdomain}`);
+  revalidatePath(`/${website.data?.subdomain}/menu`);
 
   console.log("🚀 ~ createPizza ~ error:", error);
 }
@@ -72,7 +74,7 @@ export async function publishPizza(formData: FormData) {
 
   await supabase.from("pizzas").update({ status: "published" }).eq("id", +id);
 
-  revalidatePath("/pizzas");
+  revalidatePath("/app/pizzas");
 }
 
 export async function unpublishPizza(formData: FormData) {
@@ -86,5 +88,5 @@ export async function unpublishPizza(formData: FormData) {
 
   await supabase.from("pizzas").update({ status: "draft" }).eq("id", +id);
 
-  revalidatePath("/pizzas");
+  revalidatePath("/app/pizzas");
 }

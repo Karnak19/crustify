@@ -1,30 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { getMyWebsite, getSubscription } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Script from "next/script";
+import { ConfigureAnalytics } from "./configure-analytics";
 
 export default async function AnalyticsPage() {
   const supabase = createClient();
 
-  const { error, data: userData } = await supabase.auth.getUser();
-
-  if (error) {
-    notFound();
-  }
-
-  const { data: website } = await supabase
-    .from("websites")
-    .select("plausible_shared_link, user_id:profiles (plan)")
-    .eq("user_id", userData.user.id)
-    .single();
+  const [website, subscription] = await Promise.all([
+    getMyWebsite(supabase),
+    getSubscription(supabase),
+  ]);
 
   if (!website) {
     notFound();
   }
 
-  if (website.user_id?.plan !== "pro" || !website.plausible_shared_link) {
+  if (!subscription) {
     return (
       <Card>
         <CardHeader>
@@ -42,6 +37,9 @@ export default async function AnalyticsPage() {
     );
   }
 
+  if (!website.plausible_shared_link) {
+    return <ConfigureAnalytics {...website} />;
+  }
   return (
     <Card>
       <iframe

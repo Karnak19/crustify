@@ -19,18 +19,18 @@ import { useRouter } from "next/navigation";
 export default function UserMenu({
   avatarUrl,
   email,
-  plan,
+  subscription,
 }: {
   avatarUrl: string;
   email?: string;
-  plan?: string | null;
+  subscription: boolean;
 }) {
   const router = useRouter();
   const supabase = createClient();
 
   return (
     <>
-      {plan === "pro" ? (
+      {subscription ? (
         <Badge colorVariant="pro">
           <ShieldCheck size={14} className="mr-1" />
           Pro
@@ -46,7 +46,7 @@ export default function UserMenu({
             variant="outline"
             size="icon"
             className={cn("overflow-hidden rounded-full", {
-              "ring-amber-300 ring-2": plan === "pro",
+              "ring-amber-300 ring-2": subscription,
             })}
           >
             <img
