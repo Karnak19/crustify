@@ -85,3 +85,8 @@ export const getWebsiteData = cache(
     };
   }
 );
+
+export const getThemes = cache(async (supabase: SupabaseClient) => {
+  const { data: themes } = await supabase.from("themes").select("*");
+  return themes as Database["public"]["Tables"]["themes"]["Row"][];
+});

@@ -11,7 +11,7 @@ export function Hero(props: {
       <div className="mx-auto max-w-7xl">
         <div className="relative z-10 pt-14 lg:w-full lg:max-w-2xl">
           <svg
-            className="absolute inset-y-0 right-8 hidden h-full w-80 translate-x-1/2 transform fill-white lg:block"
+            className="absolute inset-y-0 right-8 hidden h-full w-80 translate-x-1/2 transform fill-background lg:block"
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             aria-hidden="true"
