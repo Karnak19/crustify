@@ -298,34 +298,82 @@ export type Database = {
       }
       themes: {
         Row: {
+          accent: string | null
+          accent_foreground: string | null
           background: string
+          border: string | null
+          card: string | null
+          card_foreground: string | null
           created_at: string
+          destructive: string | null
+          destructive_foreground: string | null
           foreground: string
           foreground_muted: string
           id: number
+          input: string | null
+          muted: string | null
+          muted_foreground: string | null
           name: string
+          popover: string | null
+          popover_foreground: string | null
           primary_color: string
-          secondary: string
+          primary_foreground: string | null
+          radius: string | null
+          ring: string | null
+          secondary_color: string
+          secondary_foreground: string | null
         }
         Insert: {
-          background: string
+          accent?: string | null
+          accent_foreground?: string | null
+          background?: string
+          border?: string | null
+          card?: string | null
+          card_foreground?: string | null
           created_at?: string
-          foreground: string
+          destructive?: string | null
+          destructive_foreground?: string | null
+          foreground?: string
           foreground_muted: string
           id?: number
+          input?: string | null
+          muted?: string | null
+          muted_foreground?: string | null
           name: string
-          primary_color: string
-          secondary: string
+          popover?: string | null
+          popover_foreground?: string | null
+          primary_color?: string
+          primary_foreground?: string | null
+          radius?: string | null
+          ring?: string | null
+          secondary_color?: string
+          secondary_foreground?: string | null
         }
         Update: {
+          accent?: string | null
+          accent_foreground?: string | null
           background?: string
+          border?: string | null
+          card?: string | null
+          card_foreground?: string | null
           created_at?: string
+          destructive?: string | null
+          destructive_foreground?: string | null
           foreground?: string
           foreground_muted?: string
           id?: number
+          input?: string | null
+          muted?: string | null
+          muted_foreground?: string | null
           name?: string
+          popover?: string | null
+          popover_foreground?: string | null
           primary_color?: string
-          secondary?: string
+          primary_foreground?: string | null
+          radius?: string | null
+          ring?: string | null
+          secondary_color?: string
+          secondary_foreground?: string | null
         }
         Relationships: []
       }
