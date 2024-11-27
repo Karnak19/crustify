@@ -71,7 +71,13 @@ export default async function ThemesPage() {
           />
         </>
       ) : null}
-      {website && <Contact {...website} />}
+      {website?.name ? (
+        <Contact
+          name={website.name}
+          address={website.address}
+          phone={website.phone}
+        />
+      ) : null}
     </>
   );
 }

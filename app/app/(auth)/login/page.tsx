@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useServerAction } from "zsa-react";
 import { LoaderIcon } from "lucide-react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +17,11 @@ import { loginAction } from "./actions";
 export default function LoginPage() {
   const router = useRouter();
 
-  const { execute, isSuccess, error } = useServerAction(loginAction);
+  const { isSuccess, error, executeFormAction } = useServerAction(loginAction, {
+    onSuccess: () => {
+      toast.success("Vous êtes connecté, redirection en cours...");
+    },
+  });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run on state changes
   useEffect(() => {
@@ -26,7 +31,7 @@ export default function LoginPage() {
   }, [isSuccess]);
 
   return (
-    <form className="mx-auto grid w-[350px] gap-6" action={execute}>
+    <form className="mx-auto grid w-[350px] gap-6" action={executeFormAction}>
       <div className="grid gap-2 text-center">
         <h1 className="text-3xl font-bold">Connexion</h1>
         <p className="text-muted-foreground">

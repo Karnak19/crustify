@@ -90,3 +90,24 @@ export const getThemes = cache(async (supabase: SupabaseClient) => {
   const { data: themes } = await supabase.from("themes").select("*");
   return themes as Database["public"]["Tables"]["themes"]["Row"][];
 });
+
+export const getCurrentTheme = cache(async (supabase: SupabaseClient) => {
+  const user = await getUser(supabase);
+  if (!user) return null;
+
+  const { data: website } = await supabase
+    .from("websites")
+    .select("theme_id")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!website?.theme_id) return null;
+
+  const { data: currentTheme } = await supabase
+    .from("themes")
+    .select("*")
+    .eq("id", website.theme_id)
+    .single();
+
+  return currentTheme;
+});

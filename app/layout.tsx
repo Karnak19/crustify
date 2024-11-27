@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { Lobster, Taviraj } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
