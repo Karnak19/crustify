@@ -6,6 +6,8 @@ import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
 import { createClient } from "@/lib/supabase/server";
 import { getWebsiteData } from "@/lib/supabase/queries";
+import Hero2 from "./sections/hero2";
+import { get } from "http";
 
 export const dynamic = "force-static";
 export const revalidate = 86400; // 24 hours
@@ -40,7 +42,7 @@ export default async function SiteHomePage({
   return (
     <>
       <Hero {...site} />
-
+<Hero2 {...site} logo={getImageUrl({ path: site.logo })}/>
       {pizzas ? (
         <>
           <InfiniteMovingCards
