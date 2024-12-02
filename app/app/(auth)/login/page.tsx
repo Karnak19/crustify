@@ -16,14 +16,11 @@ import { loginAction } from "./actions";
 export default function LoginPage() {
   const router = useRouter();
 
-  const { execute, isSuccess, error } = useServerAction(loginAction);
+  const { execute, error } = useServerAction(loginAction, {
+    onSuccess: () => router.push("/"),
+  });
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: This effect should only run on state changes
-  useEffect(() => {
-    if (isSuccess) {
-      router.push("/");
-    }
-  }, [isSuccess]);
+
 
   return (
     <form className="mx-auto grid w-[350px] gap-6" action={execute}>

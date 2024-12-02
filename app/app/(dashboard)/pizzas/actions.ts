@@ -1,8 +1,11 @@
 "use server";
 
+console.log("🚀 Actions file loaded");
+
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { ZSAError, createServerAction } from "zsa";
 
 const pizzaSchema = z.object({
   id: z.coerce.number(),
@@ -10,7 +13,7 @@ const pizzaSchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number(),
   base: z.enum(["tomato", "cream"]),
-  picture: z.instanceof(File),
+  picture: z.instanceof(File).optional(),
   website_id: z.coerce.number()
 });
 
@@ -20,59 +23,91 @@ const pizzaInputSchema = pizzaSchema.omit({
 
 const pizzaEditSchema = pizzaSchema.partial();
 
+export const createPizzaAction = createServerAction()
+  .input(
+    z.object({
+      name: z.string(),
+      description: z.string().optional(),
+      price: z.coerce.number(),
+      base: z.enum(["tomato", "cream"]),
+      picture: z.instanceof(File).optional(),
+    }),
+    { type: "formData" }
+  )
+  .handler(async ({ input }) => {
+    try {
+      console.log("🚀 Starting pizza creation with input:", input);
+      const supabase = createClient();
 
+      const { data: userData } = await supabase.auth.getUser();
+      console.log("🚀 User data:", userData);
 
+      if (!userData.user) {
+        throw new ZSAError("NOT_AUTHORIZED", "Vous devez être connecté");
+      }
 
+      const website = await supabase
+        .from("websites")
+        .select("id, subdomain")
+        .eq("user_id", userData.user?.id)
+        .single();
 
-export async function createPizza(formData: FormData) {
-  const supabase = createClient();
+      console.log("🚀 Website data:", website);
 
-  const { data: userData } = await supabase.auth.getUser();
+      if (!website.data) {
+        throw new ZSAError("NOT_FOUND", "Site web non trouvé");
+      }
 
-  if (!userData.user) {
-    throw new Error("Unauthorized");
-  }
+      const { picture, ...toInsert } = input;
+      console.log("🚀 Picture and data:", { picture, toInsert });
 
-  const website = await supabase
-    .from("websites")
-    .select("id, subdomain")
-    .eq("user_id", userData.user?.id)
-    .single();
+      let imgPath = null;
+      
+      // Only attempt upload if picture exists and is a valid File object
+      if (picture && picture instanceof File && picture.size > 0) {
+        const { data: imgData, error: imgError } = await supabase.storage
+          .from("pizzas")
+          .upload(
+            `${userData.user.id}/${website.data.id}/${picture.name.replace(/\s/g, "-")}`,
+            picture
+          );
 
-  if (!website) {
-    throw new Error("Website not found");
-  }
+        if (imgError) {
+          console.error("🚀 Image upload error:", imgError);
+          throw new ZSAError("ERROR", "Erreur lors de l'upload de l'image");
+        }
 
-  const data = pizzaInputSchema.parse({
-    ...Object.fromEntries(formData.entries()),
-    website_id: website.data?.id,
+        console.log("🚀 Image uploaded:", imgData);
+        imgPath = imgData?.path;
+      }
+
+      const { error: pizzaError } = await supabase.from("pizzas").insert({
+        ...toInsert,
+        picture: imgPath,
+        website_id: website.data.id,
+        status: "draft"
+      });
+
+      if (pizzaError) {
+        console.error("🚀 Pizza creation error:", pizzaError);
+        throw new ZSAError("ERROR", "Erreur lors de la création de la pizza");
+      }
+
+      console.log("🚀 Pizza created successfully!");
+
+      revalidatePath("/app/pizzas");
+      revalidatePath(`/${website.data.subdomain}`);
+      revalidatePath(`/${website.data.subdomain}/menu`);
+
+      return { success: true };
+    } catch (error) {
+      console.error("🚀 Error in createPizzaAction:", error);
+      if (error instanceof ZSAError) throw error;
+      throw new ZSAError("ERROR", "Une erreur est survenue lors de la création de la pizza");
+    }
   });
 
-  console.log("🚀 ~ createPizza ~ data:", data);
 
-  const { data: imgData, error } = await supabase.storage
-    .from("pizzas")
-    .upload(
-      `${userData.user.id}/${website.data?.id}/${data.picture.name.replace(
-        /\s/g,
-        "-"
-      )}`,
-      data.picture
-    );
-
-  const { picture, ...toInsert } = data;
-
-  await supabase.from("pizzas").insert({
-    ...toInsert,
-    picture: imgData?.path,
-  });
-
-  revalidatePath("/app/pizzas");
-  revalidatePath(`/${website.data?.subdomain}`);
-  revalidatePath(`/${website.data?.subdomain}/menu`);
-
-  console.log("🚀 ~ createPizza ~ error:", error);
-}
 
 export async function publishPizza(formData: FormData) {
   const supabase = createClient();
