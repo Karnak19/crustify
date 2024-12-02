@@ -65,14 +65,20 @@ export default async function DashboardPage() {
             />
           </CardContent>
         </Card>
-        <Card className="grid place-items-center min-h-[20rem]">
+        <Card className="grid place-items-center min-h-[20rem] relative">
           {website.logo ? (
-            <Image
-              src={getImageUrl({ path: website.logo })}
-              alt={website.name ?? ""}
-              height={200}
-              width={200}
-            />
+            <>
+              <Image
+                src={getImageUrl({ path: website.logo })}
+                alt={website.name ?? ""}
+                height={200}
+                width={200}
+              />
+              <div className="mt-4">
+                <AddLogoForm />
+                
+              </div>
+            </>
           ) : (
             <AddLogoForm />
           )}
