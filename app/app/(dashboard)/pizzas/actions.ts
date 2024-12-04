@@ -13,7 +13,7 @@ const pizzaSchema = z.object({
   description: z.string().optional(),
   price: z.coerce.number(),
   base: z.enum(["tomato", "cream"]),
-  picture: z.instanceof(File).optional(),
+  picture: z.custom<File>((file) => file instanceof Blob || file instanceof File).optional(),
   website_id: z.coerce.number()
 });
 
@@ -30,7 +30,7 @@ export const createPizzaAction = createServerAction()
       description: z.string().optional(),
       price: z.coerce.number(),
       base: z.enum(["tomato", "cream"]),
-      picture: z.instanceof(File).optional(),
+      picture: z.custom<File>((file) => file instanceof Blob || file instanceof File).optional(),
     }),
     { type: "formData" }
   )
