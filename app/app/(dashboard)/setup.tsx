@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,16 +8,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { createWebsite } from "./actions";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { Label } from "@/components/ui/label";
 import { SearchCheckIcon } from "lucide-react";
+import { type FormEvent, useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useServerAction } from "zsa-react";
+import { createWebsiteAction } from "./actions";
 
 export function Setup() {
   const [name, setName] = useState("");
   const [subdomain, setSubdomain] = useState("");
+
+  const { execute } = useServerAction(createWebsiteAction, {
+    onSuccess: () => {
+      toast.success("Site web créé avec succès");
+    },
+  });
 
   const handleSubdomainChange = (str: string) => {
     setSubdomain(
@@ -32,6 +40,11 @@ export function Setup() {
     handleSubdomainChange(name);
   }, [name]);
 
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    execute({ name, subdomain });
+  };
+
   return (
     <>
       <div />
@@ -43,7 +56,7 @@ export function Setup() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form action={createWebsite} className="grid gap-4">
+          <form onSubmit={handleSubmit} className="grid gap-4">
             <div className="grid gap-2">
               <Label>Nom:</Label>
               <Input

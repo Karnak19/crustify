@@ -1,4 +1,4 @@
-import { Home, LineChart, PizzaIcon, ShieldCheck } from "lucide-react";
+import { Home, LineChart, Palette, PizzaIcon, ShieldCheck } from "lucide-react";
 
 export const nav = [
   {
@@ -10,6 +10,11 @@ export const nav = [
     title: "Pizzas",
     path: "/pizzas",
     icon: PizzaIcon,
+  },
+  {
+    title: "Themes",
+    path: "/themes",
+    icon: Palette,
   },
   {
     title: "Analytics",

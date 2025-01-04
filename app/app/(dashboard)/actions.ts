@@ -11,48 +11,28 @@ const createWebsiteSchema = z.object({
   subdomain: z.string(),
 });
 
-export async function createWebsite(formData: FormData) {
-  const supabase = createClient();
+export const createWebsiteAction = createServerAction()
+  .input(createWebsiteSchema)
+  .handler(async ({ input }) => {
+    const supabase = createClient();
 
-  const { data: userData } = await supabase.auth.getUser();
+    const { data: userData } = await supabase.auth.getUser();
 
-  if (!userData.user) {
-    throw new Error("Unauthorized");
-  }
+    if (!userData.user) {
+      throw new ZSAError(
+        "NOT_AUTHORIZED",
+        "Vous n'êtes pas autorisé à effectuer cette action"
+      );
+    }
 
-  const data = createWebsiteSchema.parse(
-    Object.fromEntries(formData.entries())
-  );
+    await supabase.from("profiles").upsert({ id: userData.user.id });
 
-  const upserted = await supabase
-    .from("profiles")
-    .upsert({ id: userData.user.id });
-  console.log("🚀 ~ createWebsite ~ upserted:", upserted);
+    await supabase
+      .from("websites")
+      .insert({ ...input, user_id: userData.user.id });
 
-  const { error } = await supabase
-    .from("websites")
-    .insert({ ...data, user_id: userData.user.id });
-  console.log("🚀 ~ createWebsite ~ error:", error);
-
-  revalidatePath("/app");
-
-  // const { data: imgData, error } = await supabase.storage
-  //   .from("websites")
-  //   .upload(
-  //     `${userData.user.id}/${website.data?.id}/${data.logo.name.replace(
-  //       /\s/g,
-  //       "-"
-  //     )}`,
-  //     data.logo
-  //   );
-
-  // const { logo, ...toInsert } = data;
-
-  // await supabase.from("websites").insert({
-  //   ...toInsert,
-  //   logo: imgData?.path,
-  // });
-}
+    revalidatePath("/app");
+  });
 
 export async function update() {}
 
@@ -115,8 +95,8 @@ export async function addLogo(_: unknown, formData: FormData) {
 const addContactSchema = z.object({
   websiteId: z.string(),
   phone: z.string(),
-  address: z.string(),
-  zip: z.string(),
+  street_address: z.string(),
+  zip_code: z.string(),
   city: z.string(),
 });
 
@@ -125,8 +105,8 @@ export const addContactAction = createServerAction()
     z.object({
       websiteId: z.string(),
       phone: z.string().regex(/^(\+33|0)(6|7|9)\d{8}$/),
-      address: z.string(),
-      zip: z.string(),
+      street_address: z.string(),
+      zip_code: z.string(),
       city: z.string(),
     }),
     {
@@ -145,14 +125,17 @@ export const addContactAction = createServerAction()
       );
     }
 
-    const { phone, ...data } = addContactSchema.parse(input);
-
-    const address = `${data.address.trim()}, ${data.zip.trim()} ${data.city.trim()}`;
+    const { phone, websiteId, ...addressData } = addContactSchema.parse(input);
 
     const { error } = await supabase
       .from("websites")
-      .update({ phone, address })
-      .eq("id", data.websiteId);
+      .update({
+        phone,
+        street_address: addressData.street_address.trim(),
+        zip_code: addressData.zip_code.trim(),
+        city: addressData.city.trim(),
+      })
+      .eq("id", websiteId);
 
     if (error) {
       throw new ZSAError(
@@ -177,7 +160,7 @@ export async function addContact(_: unknown, formData: FormData) {
     Object.fromEntries(formData.entries())
   );
 
-  const address = `${data.address.trim()}, ${data.zip.trim()} ${data.city.trim()}`;
+  const address = `${data.street_address.trim()}, ${data.zip_code.trim()} ${data.city.trim()}`;
 
   const { error } = await supabase
     .from("websites")
