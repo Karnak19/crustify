@@ -1,12 +1,12 @@
-import Link from "next/link";
-import type { ReactNode } from "react";
-import { notFound } from "next/navigation";
-import type { Metadata } from "next";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
-import Script from "next/script";
-import { Contact } from "./contact";
-import { getTheme, getWebsiteData } from "@/lib/supabase/queries";
+import { getWebsiteData } from "@/lib/supabase/queries";
 import { createClient } from "@/lib/supabase/server";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import Script from "next/script";
+import type { ReactNode } from "react";
+import { Contact } from "./contact";
 
 export const dynamic = "force-static";
 export const revalidate = 86400; // 24 hours
@@ -132,7 +132,9 @@ export default async function SiteLayout({
       {children}
       <Contact
         name={website.name ?? ""}
-        address={website.address}
+        street_address={website.street_address}
+        zip_code={website.zip_code}
+        city={website.city}
         phone={website.phone}
       />
 
