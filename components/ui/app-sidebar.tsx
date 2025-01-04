@@ -45,6 +45,11 @@ const items = [
     icon: Home,
   },
   {
+    name: "Page d'accueil",
+    href: "/homepage",
+    icon: Globe,
+  },
+  {
     name: "Pizzas",
     href: "/pizzas",
     icon: Pizza,
@@ -53,6 +58,11 @@ const items = [
     name: "Themes",
     href: "/themes",
     icon: PaletteIcon,
+  },
+  {
+    name: "Analytics",
+    href: "/analytics",
+    icon: BarChart2,
   },
 ];
 
@@ -102,13 +112,13 @@ export function AppSidebar({ website, avatarUrl, url }: AppSidebarProps) {
 
         {/* Plan Information */}
         <SidebarGroup>
-          <SidebarGroupLabel>Subscription</SidebarGroupLabel>
+          <SidebarGroupLabel>Informations</SidebarGroupLabel>
           <SidebarGroupContent>
             <div className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
                   <BarChart2 className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">Current Plan</span>
+                  <span className="text-sm">Plan actuel</span>
                 </div>
                 <span className="font-medium capitalize">
                   {website?.user_id?.plan || "Free"}

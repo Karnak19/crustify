@@ -1,19 +1,19 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { createClient } from "@/lib/supabase/client";
+import { getCurrentTheme, getThemes } from "@/lib/supabase/queries";
+import type { Database } from "@/lib/supabase/types";
+import { cn } from "@/lib/utils";
 import {
   type PropsWithChildren,
   useCallback,
-  useState,
   useEffect,
+  useState,
 } from "react";
-import useSWR from "swr";
-import { getCurrentTheme, getThemes } from "@/lib/supabase/queries";
-import { createClient } from "@/lib/supabase/client";
-import type { Database } from "@/lib/supabase/types";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Toaster } from "sonner";
+import useSWR from "swr";
 
 declare module "react" {
   interface CSSProperties {
@@ -23,9 +23,7 @@ declare module "react" {
 
 export default function ThemeLayout({ children }: PropsWithChildren<unknown>) {
   const [supabase] = useState(createClient());
-  const { data: themes, error: themesError } = useSWR("themes", () =>
-    getThemes(supabase)
-  );
+  const { data: themes } = useSWR("themes", () => getThemes(supabase));
   const { data: currentTheme, mutate: mutateCurrentTheme } = useSWR(
     "current-theme",
     () => getCurrentTheme(supabase)
@@ -78,7 +76,7 @@ export default function ThemeLayout({ children }: PropsWithChildren<unknown>) {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-6 h-[calc(100vh-10rem)]">
+      <div className="grid grid-cols-1 gap-6 h-[calc(100vh-10rem)]">
         <div className="col-span-1 rounded-lg border bg-card p-6 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-lg font-semibold">Themes</h2>
@@ -88,28 +86,35 @@ export default function ThemeLayout({ children }: PropsWithChildren<unknown>) {
               </Button>
             )}
           </div>
-          <div className="space-y-2">
-            {themes?.map((t) => (
-              <button
-                key={t.id}
-                type="button"
-                onClick={() => setSelectedTheme(t)}
-                className={cn(
-                  "w-full text-left px-4 py-2 rounded-md transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
-                  selectedTheme?.id === t.id &&
-                    "bg-accent text-accent-foreground"
-                )}
-              >
-                <div className="flex items-center gap-3">
+
+          <div className="overflow-auto pb-2">
+            <ToggleGroup
+              type="single"
+              value={selectedTheme?.id?.toString()}
+              onValueChange={(value) => {
+                const theme = themes?.find((t) => t.id.toString() === value);
+                if (theme) setSelectedTheme(theme);
+              }}
+              className="inline-flex gap-3 min-w-max"
+            >
+              {themes?.map((theme) => (
+                <ToggleGroupItem
+                  key={theme.id}
+                  value={theme.id.toString()}
+                  className={cn(
+                    "flex-row items-center gap-2 px-4 py-3 rounded-lg transition-colors min-w-[120px]",
+                    "hover:bg-accent hover:text-accent-foreground",
+                    "data-[state=on]:bg-accent data-[state=on]:text-accent-foreground"
+                  )}
+                >
                   <div
-                    className="w-4 h-4 rounded-full border"
-                    style={{ backgroundColor: `hsl(${t.primary_color})` }}
+                    className="w-8 h-8 rounded-full border shadow-sm"
+                    style={{ backgroundColor: `hsl(${theme.primary_color})` }}
                   />
-                  <span>{t.name}</span>
-                </div>
-              </button>
-            ))}
+                  <span className="text-sm font-medium">{theme.name}</span>
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
           </div>
         </div>
 

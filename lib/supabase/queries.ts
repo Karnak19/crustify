@@ -1,7 +1,7 @@
+import { env } from "@/env";
+import type { Database } from "@/lib/supabase/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { cache } from "react";
-import type { Database } from "@/lib/supabase/types";
-import { env } from "@/env";
 
 export const getUser = cache(async (supabase: SupabaseClient) => {
   const {
@@ -11,7 +11,7 @@ export const getUser = cache(async (supabase: SupabaseClient) => {
 });
 
 export const getSubscription = cache(async (supabase: SupabaseClient) => {
-  const { data: subscription, error } = await supabase
+  const { data: subscription } = await supabase
     .from("subscriptions")
     .select("*, prices(*, products(*))")
     .in("status", ["trialing", "active"])
@@ -21,7 +21,7 @@ export const getSubscription = cache(async (supabase: SupabaseClient) => {
 });
 
 export const getProducts = cache(async (supabase: SupabaseClient) => {
-  const { data: products, error } = await supabase
+  const { data: products } = await supabase
     .from("products")
     .select("*, prices(*)")
     .eq("active", true)
@@ -71,12 +71,13 @@ export const getTheme = cache(
 export const getWebsiteData = cache(
   async (supabase: SupabaseClient, domain: string) => {
     const isSubdomain = domain.endsWith(`.${env.NEXT_PUBLIC_ROOT_DOMAIN}`);
-
     const eq = isSubdomain ? domain.split(".")[0] : domain;
 
     const { data: website } = await supabase
       .from("websites")
-      .select("*, themes(*)")
+      .select(
+        "*, user_id(plan), themes(*), homepage_description, menu_button_text, contact_button_text"
+      )
       .eq("subdomain", eq)
       .single();
 

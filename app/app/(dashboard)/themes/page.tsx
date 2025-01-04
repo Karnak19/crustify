@@ -74,7 +74,9 @@ export default async function ThemesPage() {
       {website?.name ? (
         <Contact
           name={website.name}
-          address={website.address}
+          street_address={website.street_address}
+          zip_code={website.zip_code}
+          city={website.city}
           phone={website.phone}
         />
       ) : null}

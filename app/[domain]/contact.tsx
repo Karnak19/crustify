@@ -3,13 +3,22 @@ import { MapPinned, Phone } from "lucide-react";
 
 export function Contact({
   name,
-  address,
+  street_address,
+  zip_code,
+  city,
   phone,
 }: {
   name: string;
-  address: string | null;
+  street_address: string | null;
+  zip_code: string | null;
+  city: string | null;
   phone: string | null;
 }) {
+  const fullAddress =
+    street_address && zip_code && city
+      ? `${street_address}, ${zip_code} ${city}`
+      : "1234 Elm St, Springfield, IL";
+
   return (
     <div className="relative isolate bg-background">
       <div className="mx-auto grid grid-cols-1 lg:grid-cols-2 lg:min-h-[700px]">
@@ -58,7 +67,7 @@ export function Contact({
                   />
                 </dt>
                 <dd>
-                  <address>{address || "1234 Elm St, Springfield, IL"}</address>
+                  <address>{fullAddress}</address>
                 </dd>
               </div>
               <div className="flex gap-x-4">
@@ -90,8 +99,8 @@ export function Contact({
           referrerPolicy="no-referrer-when-downgrade"
           src={`https://www.google.com/maps/embed/v1/place?key=${
             env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-          }&q=${`${name.split(" ").join("+")}+${address
-            ?.split(" ")
+          }&q=${`${name.split(" ").join("+")}+${fullAddress
+            .split(" ")
             .join("+")}`}&zoom=16`}
         />
       </div>

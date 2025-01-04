@@ -42,6 +42,143 @@ Crustify: Building a micro-CMS for pizzerias for French market. The goal is to b
 - Integrate Shadcn and Tailwind for a cohesive styling approach
 
 
+## ZSA Integration
+### Creating your first action
+```ts
+// actions.ts
+"use server"
+
+import { createServerAction } from "zsa"
+import z from "zod"
+
+export const incrementNumberAction = createServerAction() 
+    .input(z.object({
+        number: z.number()
+    }))
+    .handler(async ({ input }) => {
+        // Sleep for .5 seconds
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        // Increment the input number by 1
+        return input.number + 1;
+    });
+```
+
+Let's break down the code:
+
+createServerAction initializes a server action.
+input sets the input schema for the action using a Zod schema.
+handler sets the handler function for the action. The input is automatically validated based on the input schema.
+A ZSAError with the code INPUT_PARSE_ERROR will be returned if the handler's input is does not match input schema.
+
+### Calling from the server
+Server actions can also be called directly from the server without the need for a try/catch block.
+
+
+```ts
+"use server"
+
+const [data, err] = await incrementNumberAction({ number: 24 }); 
+
+if (err) {
+    return;
+} else {
+    console.log(data); // 25
+}
+```
+
+
+However, usually you will want to use the useServerAction hook to make your life easier.
+
+Server actions come with built-in loading states, making it easy to handle asynchronous operations. Here's an example of using the incrementNumberAction as a mutation:
+
+```tsx
+"use client"
+
+import { incrementNumberAction } from "./actions";
+import { useServerAction } from "zsa-react";
+import { useState } from "react";
+import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle } from "ui";
+
+export default function IncrementExample() {
+    const [counter, setCounter] = useState(0);
+    const { isPending, execute, data } = useServerAction(incrementNumberAction); 
+
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Increment Number</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4">
+                <Button
+                    disabled={isPending} 
+                    onClick={async () => {
+                        const [data, err] = await execute({ 
+                            number: counter, 
+                        }) 
+
+                        if (err) {
+                            // handle error
+                            return
+                        }
+
+                        setCounter(data);
+                    }}
+                >
+                    Invoke action
+                </Button>
+                <p>Count:</p>
+                <div>{isPending ? "saving..." : data}</div>
+            </CardContent>
+        </Card>
+    );
+}
+```
+
+### Basic Form
+You can use a server action directly with a regular form. Set the type to "formData" to indicate that the input is a FormData object.
+```ts
+"use server"
+
+import z from "zod"
+import { createServerAction } from "zsa"
+
+export const produceNewMessage = createServerAction()
+  .input(
+    z.object({
+      name: z.string().min(5),
+    }),
+    {
+      type: "formData", 
+    }
+  )
+  .handler(async ({ input }) => {
+    await new Promise((resolve) => setTimeout(resolve, 500))
+    return "Hello, " + input.name
+  })
+  ```
+
+  ```tsx
+  "use client"
+
+import { useServerAction } from "zsa-react"
+import { produceNewMessage } from "./actions";
+
+export default function FormExample() {
+
+  const {executeFormAction} = userServerAction(produceNewMessage)
+    return (
+        <form
+            action={executeFormAction} 
+        >
+            <label>
+                Name:
+                <input type="text" name="name" required />
+            </label>
+            <button type="submit">Submit</button>
+        </form>
+    );
+}
+  ```
 
 ## General Guidance
 
