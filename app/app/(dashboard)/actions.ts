@@ -34,12 +34,6 @@ export const createWebsiteAction = createServerAction()
     revalidatePath("/app");
   });
 
-export async function update() {}
-
-// ------------------------------------------------------------
-// Add logo form
-// ------------------------------------------------------------
-
 const addLogoSchema = z.object({
   file: z.instanceof(File),
 });
@@ -146,30 +140,3 @@ export const addContactAction = createServerAction()
 
     return null;
   });
-
-export async function addContact(_: unknown, formData: FormData) {
-  const supabase = createClient();
-
-  const { data: userData } = await supabase.auth.getUser();
-
-  if (!userData.user) {
-    return { success: false, error: "Unauthorized" };
-  }
-
-  const { phone, ...data } = addContactSchema.parse(
-    Object.fromEntries(formData.entries())
-  );
-
-  const address = `${data.street_address.trim()}, ${data.zip_code.trim()} ${data.city.trim()}`;
-
-  const { error } = await supabase
-    .from("websites")
-    .update({ phone, address })
-    .eq("id", data.websiteId);
-
-  if (error) {
-    return { success: false, error };
-  }
-
-  return { success: true };
-}
