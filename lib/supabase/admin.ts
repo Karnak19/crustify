@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import type Stripe from "stripe";
 import type { Database, Tables, TablesInsert } from "./types";
 import { env } from "@/env";
+import { createWebsiteAnalytics, putWebsiteSharedLink } from "@/lib/plausible";
 
 type Product = Tables<"products">;
 type Price = Tables<"prices">;
@@ -232,6 +233,39 @@ const manageSubscriptionStatusChange = async (
   const subscription = await stripe.subscriptions.retrieve(subscriptionId, {
     expand: ["default_payment_method"],
   });
+
+  // Get the user's website
+  const { data: websiteData, error: websiteError } = await supabaseAdmin
+    .from("websites")
+    .select("*")
+    .eq("user_id", uuid)
+    .single();
+
+  if (websiteError) {
+    console.error(`Website lookup failed: ${websiteError.message}`);
+  }
+
+  // If this is a new subscription and we have website data, create Plausible analytics
+  if (createAction && websiteData && !websiteData.plausible_shared_link) {
+    try {
+      const domain = `${websiteData.subdomain}.crustify.fr`;
+
+      // Create website on Plausible
+      const { domain: createdDomain } = await createWebsiteAnalytics(domain);
+
+      // Create shared link
+      const { url } = await putWebsiteSharedLink(createdDomain);
+
+      // Update website with Plausible shared link
+      await supabaseAdmin
+        .from("websites")
+        .update({ plausible_shared_link: url })
+        .eq("id", websiteData.id);
+    } catch (error) {
+      console.error("Failed to setup Plausible analytics:", error);
+    }
+  }
+
   // Upsert the latest status of the subscription object.
   const subscriptionData: TablesInsert<"subscriptions"> = {
     id: subscription.id,

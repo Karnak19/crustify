@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 
-import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { createClient } from "@/lib/supabase/server";
 
-import { Setup } from "./setup";
-import Image from "next/image";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
-import { AddLogoForm } from "./add-logo-form";
+import Image from "next/image";
 import { AddContactForm } from "./add-contact-form";
+import { AddLogoForm } from "./add-logo-form";
+import { Setup } from "./setup";
 
 export default async function DashboardPage() {
   const supabase = createClient();

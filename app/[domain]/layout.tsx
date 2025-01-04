@@ -151,7 +151,7 @@ export default async function SiteLayout({
       <Script
         defer
         data-domain={domain}
-        src="https://plausible.rover.vernouillet.dev/js/script.js"
+        src="https://plausible.crustify.fr/js/script.js"
       />
     </>
   );

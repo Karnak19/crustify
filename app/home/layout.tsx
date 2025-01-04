@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import Script from "next/script";
+import type { ReactNode } from "react";
 
 export default async function SiteLayout({
   children,

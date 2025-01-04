@@ -1,0 +1,52 @@
+# AI Assistant Rules
+
+## Project Context
+
+Crustify: Building a micro-CMS for pizzerias for French market. The goal is to be easy to have their pizzerias website with removing all the hastle.
+
+## Tech Stack
+
+- Bun (always use this)
+- Next.js app router
+- TailwindCSS
+- Shadcn UI
+- Supabase
+- Stripe
+- zsa
+
+
+## App folder structure
+
+- `[domain]` is my customers websites
+- `app` is the dashboard
+- `home` is the landing page for crustify website
+
+
+## Next.js Guidance
+
+- Use Next.js app router for file-based routing
+- Prefer server components over client components if possible
+- If not possible, use client components with tanstack query combined with supabase for data fetching
+- Implement loading.tsx for loading states
+- Use error.tsx for error handling
+- for forms we use zsa to better handle server actions, refer to the zsa documentation
+
+## TailwindCSS Usage
+
+- Utilize Tailwind CSS for responsive design with a mobile-first approach
+- Leverage Tailwind's utility classes for rapid prototyping
+
+## Shadcn UI Integration
+
+- Use Shadcn UI components for consistent and accessible UI elements
+- Integrate Shadcn and Tailwind for a cohesive styling approach
+
+
+
+## General Guidance
+
+- Ensure SEO optimization for websites visibility
+- Implement internationalization to cater to the French market
+- ALWAYS use the french language for the website contents
+- Implement early returns for better readability
+- Prefix event handlers with "handle" (handleClick, handleSubmit)
