@@ -1,7 +1,26 @@
 import { env } from "@/env";
-import type { Database } from "@/lib/supabase/types";
+import type { Tables } from "@/lib/supabase/types";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { cache } from "react";
+
+type Product = Tables<"products">;
+type Price = Tables<"prices">;
+type Subscription = Tables<"subscriptions">;
+type Profile = Tables<"profiles">;
+type Website = Tables<"websites">;
+type Theme = Tables<"themes">;
+interface ProductWithPrices extends Product {
+  prices: Price[];
+}
+interface PriceWithProduct extends Price {
+  products: Product | null;
+}
+interface SubscriptionWithProduct extends Subscription {
+  prices: PriceWithProduct | null;
+}
+interface WebsiteWithTheme extends Website {
+  themes: Theme;
+}
 
 export const getUser = cache(async (supabase: SupabaseClient) => {
   const {
@@ -17,7 +36,7 @@ export const getSubscription = cache(async (supabase: SupabaseClient) => {
     .in("status", ["trialing", "active"])
     .maybeSingle();
 
-  return subscription as Database["public"]["Tables"]["subscriptions"]["Row"];
+  return subscription as SubscriptionWithProduct;
 });
 
 export const getProducts = cache(async (supabase: SupabaseClient) => {
@@ -29,7 +48,7 @@ export const getProducts = cache(async (supabase: SupabaseClient) => {
     .order("metadata->index")
     .order("unit_amount", { referencedTable: "prices" });
 
-  return products as Database["public"]["Tables"]["products"]["Row"][];
+  return products as ProductWithPrices[];
 });
 
 export const getUserDetails = cache(async (supabase: SupabaseClient) => {
@@ -37,7 +56,7 @@ export const getUserDetails = cache(async (supabase: SupabaseClient) => {
     .from("profiles")
     .select("*")
     .single();
-  return userDetails as Database["public"]["Tables"]["profiles"]["Row"];
+  return userDetails as Profile;
 });
 
 export const getMyWebsite = cache(async (supabase: SupabaseClient) => {
@@ -49,7 +68,7 @@ export const getMyWebsite = cache(async (supabase: SupabaseClient) => {
     .eq("user_id", user?.id)
     .single();
 
-  return website as Database["public"]["Tables"]["websites"]["Row"];
+  return website as Website;
 });
 
 export const getTheme = cache(
@@ -64,7 +83,7 @@ export const getTheme = cache(
       .eq("subdomain", eq)
       .single();
 
-    return theme as Database["public"]["Tables"]["themes"]["Row"];
+    return theme as Theme;
   }
 );
 
@@ -81,15 +100,13 @@ export const getWebsiteData = cache(
       .eq("subdomain", eq)
       .single();
 
-    return website as Database["public"]["Tables"]["websites"]["Row"] & {
-      themes: Database["public"]["Tables"]["themes"]["Row"];
-    };
+    return website as WebsiteWithTheme;
   }
 );
 
 export const getThemes = cache(async (supabase: SupabaseClient) => {
   const { data: themes } = await supabase.from("themes").select("*");
-  return themes as Database["public"]["Tables"]["themes"]["Row"][];
+  return themes as Theme[];
 });
 
 export const getCurrentTheme = cache(async (supabase: SupabaseClient) => {
