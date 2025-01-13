@@ -9,26 +9,68 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string
+          id: number
+          name: string
+          updated_at: string
+          website_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: never
+          name: string
+          updated_at?: string
+          website_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: never
+          name?: string
+          updated_at?: string
+          website_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_website_id_fkey"
+            columns: ["website_id"]
+            isOneToOne: false
+            referencedRelation: "websites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ingredients: {
         Row: {
+          category_id: number | null
           created_at: string
           id: number
           name: string
           website_id: number | null
         }
         Insert: {
+          category_id?: number | null
           created_at?: string
           id?: number
           name: string
           website_id?: number | null
         }
         Update: {
+          category_id?: number | null
           created_at?: string
           id?: number
           name?: string
           website_id?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "ingredients_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "ingredients_website_id_fkey"
             columns: ["website_id"]
@@ -217,15 +259,7 @@ export type Database = {
           plan?: string | null
           stripe_customer_id?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "profiles_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       subscriptions: {
         Row: {
@@ -287,45 +321,86 @@ export type Database = {
             referencedRelation: "prices"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "subscriptions_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
         ]
       }
       themes: {
         Row: {
+          accent: string | null
+          accent_foreground: string | null
           background: string
+          border: string | null
+          card: string | null
+          card_foreground: string | null
           created_at: string
+          destructive: string | null
+          destructive_foreground: string | null
           foreground: string
           foreground_muted: string
           id: number
+          input: string | null
+          muted: string | null
+          muted_foreground: string | null
           name: string
+          popover: string | null
+          popover_foreground: string | null
           primary_color: string
-          secondary: string
+          primary_foreground: string | null
+          radius: string | null
+          ring: string | null
+          secondary_color: string
+          secondary_foreground: string | null
         }
         Insert: {
-          background: string
+          accent?: string | null
+          accent_foreground?: string | null
+          background?: string
+          border?: string | null
+          card?: string | null
+          card_foreground?: string | null
           created_at?: string
-          foreground: string
+          destructive?: string | null
+          destructive_foreground?: string | null
+          foreground?: string
           foreground_muted: string
           id?: number
+          input?: string | null
+          muted?: string | null
+          muted_foreground?: string | null
           name: string
-          primary_color: string
-          secondary: string
+          popover?: string | null
+          popover_foreground?: string | null
+          primary_color?: string
+          primary_foreground?: string | null
+          radius?: string | null
+          ring?: string | null
+          secondary_color?: string
+          secondary_foreground?: string | null
         }
         Update: {
+          accent?: string | null
+          accent_foreground?: string | null
           background?: string
+          border?: string | null
+          card?: string | null
+          card_foreground?: string | null
           created_at?: string
+          destructive?: string | null
+          destructive_foreground?: string | null
           foreground?: string
           foreground_muted?: string
           id?: number
+          input?: string | null
+          muted?: string | null
+          muted_foreground?: string | null
           name?: string
+          popover?: string | null
+          popover_foreground?: string | null
           primary_color?: string
-          secondary?: string
+          primary_foreground?: string | null
+          radius?: string | null
+          ring?: string | null
+          secondary_color?: string
+          secondary_foreground?: string | null
         }
         Relationships: []
       }
@@ -388,7 +463,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_auth_website_id: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
     }
     Enums: {
       pizza_base: "tomato" | "cream"
@@ -491,4 +569,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

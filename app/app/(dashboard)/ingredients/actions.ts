@@ -5,104 +5,136 @@ console.log("🚀 Actions file loaded");
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { ZSAError, createServerAction } from "zsa";
+import { createServerAction } from "zsa";
+import { getCurrentWebsite } from "@/lib/supabase/get-current-website";
+import { authedWithWebsiteProcedure } from "@/lib/procedures";
 
+export const createIngridientAction = authedWithWebsiteProcedure
+	.createServerAction()
+	.input(
+		z.object({
+			name: z.string(),
+			category_id: z.coerce.number().optional(),
+		}),
+		{ type: "formData" },
+	)
+	.handler(async ({ input, ctx }) => {
+		try {
+			console.log("🚀 Starting ingridient creation with input:", input);
+			const { supabase, website } = ctx;
 
-const ingridientSchema = z.object({
-  id: z.coerce.number(),
-  name: z.string(),
-  website_id: z.coerce.number()
-});
+			const { error: ingridientError } = await supabase.from("ingredients").insert({
+				name: input.name,
+				category_id: input.category_id || null,
+				website_id: website.id,
+			});
 
+			if (ingridientError) {
+				console.error("🚀 Ingridient creation error:", ingridientError);
+				throw new Error("Une erreur est survenue lors de la création de l'ingridient");
+			}
 
+			console.log("🚀 Ingridient created successfully!");
+			revalidatePath("/app/ingredients");
+			revalidatePath(`/${website.subdomain}`);
+			revalidatePath(`/${website.subdomain}/menu`);
 
-export const createIngridientAction = createServerAction()
-.input(
-  z.object({
-    name: z.string(),
-  }),
-  { type: "formData" }
-)
-.handler(async ({ input }) => {
-  try {
-    console.log("🚀 Starting ingridient creation with input:", input);
-    const supabase = createClient();
+			return { success: true };
+		} catch (error) {
+			console.error("🚀 Error in createIngridientAction:", error);
+			throw error;
+		}
+	});
 
-    const { data: userData } = await supabase.auth.getUser();
-    console.log("🚀 User data:", userData)    
-    if (!userData.user) {
-      throw new ZSAError("NOT_AUTHORIZED", "Vous devez être connecté");
-    }
+export const editIngridientAction = createServerAction()
+	.input(
+		z.object({
+			id: z.coerce.number(),
+			name: z.string(),
+			category_id: z.coerce.number().optional(),
+		}),
+		{ type: "formData" },
+	)
+	.handler(async ({ input }) => {
+		try {
+			console.log("🚀 Starting ingridient edit with input:", input);
+			const supabase = createClient();
+			const { data: userData } = await supabase.auth.getUser();
+			console.log("🚀 User data:", userData);
+			if (!userData.user) {
+				throw new Error("Vous devez être connecté");
+			}
 
-    const website = await supabase
-      .from("websites")
-      .select("id, subdomain")
-      .eq("user_id", userData.user?.id)
-      .single();
+			const website = await getCurrentWebsite(supabase);
 
-    console.log("🚀 Website data:", website)    
-    if (!website.data) {
-      throw new ZSAError("NOT_FOUND", "Site web non rencontré");
-    }    
-    const { error: ingridientError } = await supabase.from("ingredients").insert({
-      name: input.name,
-      website_id: website.data.id,
-    });
+			console.log("🚀 Website data:", website);
+			if (!website) {
+				throw new Error("Site web non rencontré");
+			}
 
-    if (ingridientError) {
-      console.error("🚀 Ingridient creation error:", ingridientError)    
-      throw new ZSAError("ERROR", "Une erreur est survenue lors de la création de l'ingridient");    
-    }    
-    console.log("🚀 Ingridient created successfully!");    
-    revalidatePath("/app/ingredients");    
-    revalidatePath(`/${website.data.subdomain}`);    
-    revalidatePath(`/${website.data.subdomain}/menu`);    
-    return { success: true };    
-  } catch (error) {
-    console.error("🚀 Error in createIngridientAction:", error);    
-    if (error instanceof ZSAError) throw error;    
-    throw new ZSAError("ERROR", "Une erreur est survenue lors de la création de l'ingridient");    
-  }    
-}); 
+			const { error: ingridientError } = await supabase
+				.from("ingredients")
+				.update({
+					name: input.name,
+					category_id: input.category_id || null,
+				})
+				.eq("id", input.id)
+				.eq("website_id", website.id);
 
+			if (ingridientError) {
+				console.error("🚀 Ingridient edit error:", ingridientError);
+				throw new Error("Une erreur est survenue lors de l'édition de l'ingridient");
+			}
 
-export async function editIngridient(formData: FormData) {            
-    const supabase = createClient();    
-    const { data: userData } = await supabase.auth.getUser();    
-    if (!userData.user) {    
-      throw new Error("Unauthorized");    
-    }    
-    const website = await supabase    
-      .from("websites")    
-      .select("id, subdomain")    
-      .eq("user_id", userData.user?.id)    
-      .single();    
-    if (!website) {    
-      throw new Error("Website not found");    
-    }    
-    const ingridient = ingridientSchema.parse({    
-      id: formData.get("id"),    
-      name: formData.get("name"),    
-      website_id: website?.data?.id,    
-    });    
-    await supabase.from("ingredients").update({ ...ingridient }).eq("id", ingridient.id);    
-    revalidatePath("/app/ingredients");    
-    revalidatePath(`/${website.data?.subdomain}`);    
-    revalidatePath(`/${website.data?.subdomain}/menu`);   
+			console.log("🚀 Ingridient edited successfully!");
+			revalidatePath("/app/ingredients");
+			revalidatePath(`/${website.subdomain}`);
+			revalidatePath(`/${website.subdomain}/menu`);
+
+			return { success: true };
+		} catch (error) {
+			console.error("🚀 Error in editIngridientAction:", error);
+			throw error;
+		}
+	});
+
+export async function deleteIngridient(formData: FormData) {
+	const id = formData.get("id");
+	if (!id || typeof id !== "string") {
+		throw new Error("ID d'ingrédient invalide");
+	}
+
+	const supabase = createClient();
+	const website = await getCurrentWebsite(supabase);
+
+	if (!website) {
+		throw new Error("Site web non trouvé");
+	}
+
+	const { error } = await supabase.from("ingredients").delete().eq("id", parseInt(id)).eq("website_id", website.id);
+
+	if (error) {
+		console.error("Error deleting ingredient:", error);
+		throw new Error("Erreur lors de la suppression de l'ingrédient");
+	}
+
+	revalidatePath("/app/ingredients");
 }
 
+export async function updateIngredient(data: {
+	id: number;
+	name: string;
+	category: string;
+}) {
+	const supabase = createClient();
 
-export async function deleteIngridient(formData: FormData) {    
-    const supabase = createClient();    
-    const { data: userData } = await supabase.auth.getUser();    
-    if (!userData.user) {    
-      throw new Error("Unauthorized");    
-    }    
-    const id = formData.get("id");    
-    if (!id) {    
-      throw new Error("No id provided");    
-    }    
-    await supabase.from("ingredients").delete().eq("id", +id);    
-    revalidatePath("/app/ingredients");    
-} 
+	await supabase
+		.from("ingredients")
+		.update({
+			name: data.name,
+			category: data.category,
+		})
+		.eq("id", data.id);
 
+	revalidatePath("/ingredients");
+}
