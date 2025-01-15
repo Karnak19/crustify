@@ -98,30 +98,38 @@ export const editIngridientAction = createServerAction()
 		}
 	});
 
-export async function deleteIngridient(formData: FormData) {
-	const id = formData.get("id");
-	if (!id || typeof id !== "string") {
-		throw new Error("ID d'ingrédient invalide");
-	}
+export const deleteIngridientAction = authedWithWebsiteProcedure
+	.createServerAction()
+	.input(
+		z.object({
+			id: z.coerce.number(),
+		}),
+		// { type: "formData" },
+	)
+	.handler(async ({ input, ctx }) => {
+		try {
+			const { supabase, website } = ctx;
 
-	const supabase = createClient();
-	const website = await getCurrentWebsite(supabase);
+			const { error } = await supabase
+				.from("ingredients")
+				.delete()
+				.eq("id", input.id)
+				.eq("website_id", website.id);
 
-	if (!website) {
-		throw new Error("Site web non trouvé");
-	}
+			if (error) {
+				console.error("Error deleting ingredient:", error);
+				throw new Error("Erreur lors de la suppression de l'ingrédient");
+			}
 
-	const { error } = await supabase.from("ingredients").delete().eq("id", parseInt(id)).eq("website_id", website.id);
+			revalidatePath("/app/ingredients");
+			return { success: true };
+		} catch (error) {
+			console.error("Error in deleteIngridient:", error);
+			throw error;
+		}
+	});
 
-	if (error) {
-		console.error("Error deleting ingredient:", error);
-		throw new Error("Erreur lors de la suppression de l'ingrédient");
-	}
-
-	revalidatePath("/app/ingredients");
-}
-
-export async function updateIngredient(data: {
+export async function updateIngredientAction(data: {
 	id: number;
 	name: string;
 	category: string;
