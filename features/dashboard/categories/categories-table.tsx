@@ -1,15 +1,12 @@
 "use client";
 
-import {
-	ColumnsIngredientsTable,
-	type Ingredient,
-	SortableHeadersIngredients,
-} from "../../../app/app/(dashboard)/ingredients/columns-ingredient-table";
 import { DataTable } from "@/features/dashboard/data-table/data-table";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Tables } from "@/lib/supabase/types";
+import { ColumnsCategoriesTable } from "@/app/app/(dashboard)/categories-ingredients/columns-categories-table";
+import { SortableHeadersIngredients } from "@/app/app/(dashboard)/ingredients/columns-ingredient-table";
 
-export function IngredientsTable({
+export function CategoriesTable({
 	ingredients: initialIngredients,
 	categories,
 }: {
@@ -19,14 +16,16 @@ export function IngredientsTable({
 	return (
 		<Card className="overflow-auto">
 			<CardHeader>
-				<CardTitle>Ingredients</CardTitle>
-				<CardDescription>Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.</CardDescription>
+				<CardTitle>Categories</CardTitle>
+				<CardDescription>
+					Gérez vos categories d'ingredients ici. Vous pouvez créer, modifier et supprimer des categories.
+				</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<DataTable
 					sortableHeaders={SortableHeadersIngredients}
 					data={initialIngredients}
-					columns={ColumnsIngredientsTable({ categories })}
+					columns={ColumnsCategoriesTable({ categories })}
 				/>
 			</CardContent>
 		</Card>

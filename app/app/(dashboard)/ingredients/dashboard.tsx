@@ -2,10 +2,12 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-import { getIngredients } from "@/lib/supabase/get-ingredients";
 import { CreateIngredientForm } from "../../../../features/dashboard/ingredients/forms/create-ingredient-form";
 import { createClient } from "@/lib/supabase/server";
 import { IngredientsTable } from "../../../../features/dashboard/ingredients/ingredients-table";
+import TabsComponent from "@/features/dashboard/tabs/tabs";
+import { getIngredients } from "@/lib/supabase/get-ingredients";
+import { CategoriesTable } from "@/features/dashboard/categories/categories-table";
 
 export async function Dashboard() {
 	const supabase = createClient();
@@ -22,9 +24,20 @@ export async function Dashboard() {
 	}
 
 	const { data: categories } = await supabase.from("categories").select("*");
-	console.log("Categories:", categories);
-
 	const ingredients = await getIngredients();
+
+	const tabs = [
+		{
+			value: "ingredients",
+			label: "Ingredients",
+			content: <IngredientsTable ingredients={ingredients} categories={categories || []} />,
+		},
+		{
+			value: "categories",
+			label: "Categories",
+			content: <CategoriesTable ingredients={ingredients.filter((ing) => !ing.categories)} categories={categories || []} />,
+		},
+	];
 
 	return (
 		<>
@@ -45,7 +58,7 @@ export async function Dashboard() {
 				</div>
 			</div>
 			<div className="mt-4 grid gap-4">
-				<IngredientsTable ingredients={ingredients} categories={categories || []} />
+				<TabsComponent tabs={tabs} defaultValue="ingredients" />
 			</div>
 		</>
 	);
