@@ -2,8 +2,6 @@
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { authedWithWebsiteProcedure } from "@/lib/procedures";
-import { createClient } from "@/lib/supabase/server";
-import { getCurrentWebsite } from "@/lib/supabase/get-current-website";
 
 export const createCategoryAction = authedWithWebsiteProcedure
 	.createServerAction()
@@ -122,11 +120,7 @@ export const deleteCategoryAction = authedWithWebsiteProcedure
 			console.log("Successfully updated ingredients, proceeding to delete category");
 
 			// Delete the category
-			const { error: deleteError } = await supabase
-				.from("categories")
-				.delete()
-				.eq("id", input.id)
-				.eq("website_id", website.id);
+			const { error: deleteError } = await supabase.from("categories").delete().eq("id", input.id).eq("website_id", website.id);
 
 			if (deleteError) {
 				console.error("Error deleting category:", deleteError);
@@ -138,7 +132,6 @@ export const deleteCategoryAction = authedWithWebsiteProcedure
 			// Revalidate all necessary paths
 			revalidatePath("/app/ingredients");
 			revalidatePath("/app/categories-ingredients");
-		
 
 			return { success: true };
 		} catch (error) {

@@ -3,6 +3,7 @@ import { PlusCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { CreateIngredientForm } from "../../../../features/dashboard/ingredients/forms/create-ingredient-form";
+import { CreateCategoryForm } from "../../../../features/dashboard/categories/forms/create-category-form"; // Import the new CreateCategoryForm component
 import { createClient } from "@/lib/supabase/server";
 import { IngredientsTable } from "../../../../features/dashboard/ingredients/ingredients-table";
 import TabsComponent from "@/features/dashboard/tabs/tabsComponent";
@@ -23,7 +24,8 @@ export async function Dashboard() {
 		throw new Error("Website not found");
 	}
 
-	const { data: categories } = await supabase.from("categories").select("*");
+	const { data: fetchedCategories } = await supabase.from("categories").select("*");
+	const categories: Array<{ created_at: string; id: number; name: string; updated_at: string; website_id: number | null; }> = fetchedCategories ?? [];
 	const ingredients = await getIngredients();
 
 	const tabs = [
@@ -31,13 +33,13 @@ export async function Dashboard() {
 			value: "ingredients",
 			label: "Ingredients",
 			description: "Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.",
-			content: <IngredientsTable ingredients={ingredients} categories={categories || []} />,
+			content: <IngredientsTable ingredients={ingredients} categories={categories} />,
 		},
 		{
 			value: "categories",
 			label: "Categories",
 			description: "Gérez vos catégories ici. Vous pouvez créer, modifier et supprimer des catégories.",
-			content: <CategoriesTable ingredients={ingredients} categories={categories || []} />,
+			content: <CategoriesTable ingredients={ingredients} categories={categories} />,
 		},
 	];
 
@@ -49,7 +51,7 @@ export async function Dashboard() {
 						<DialogTrigger asChild>
 							<Button size="sm" className="h-7 gap-1">
 								<PlusCircle className="h-3.5 w-3.5" />
-								<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Ajouter un ingredient</span>
+								<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Ingredient</span>
 							</Button>
 						</DialogTrigger>
 						<DialogContent>
@@ -57,11 +59,21 @@ export async function Dashboard() {
 							{categories && <CreateIngredientForm categories={categories} />}
 						</DialogContent>
 					</Dialog>
+					<Dialog>
+						<DialogTrigger asChild>
+							<Button size="sm" className="h-7 gap-1">
+								<PlusCircle className="h-3.5 w-3.5" />
+								<span className="sr-only sm:not-sr-only sm:whitespace-nowrap">Categorie</span>
+							</Button>
+						</DialogTrigger>
+						<DialogContent>
+							<DialogTitle>Ajouter une categorie</DialogTitle>
+							<CreateCategoryForm categories={categories} />
+						</DialogContent>
+					</Dialog>
 				</div>
 			</div>
-			<div className="mt-4 grid gap-4">
-				<TabsComponent tabs={tabs} defaultValue="ingredients" title="Gestion des ingredients et catégories" />
-			</div>
+			<TabsComponent tabs={tabs} defaultValue="ingredients" title="Gestion des ingredients et catégories" />
 		</>
 	);
 }
