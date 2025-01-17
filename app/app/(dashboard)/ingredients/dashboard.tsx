@@ -1,34 +1,11 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, PlusCircle } from "lucide-react";
-import { getMyPizzas } from "@/lib/supabase/get-pizzas";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { PlusCircle } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-import { Suspense } from "react";
 import { getIngredients } from "@/lib/supabase/get-ingredients";
-import { IngredientsTable } from "./ingredients-table";
-import { CreateIngredientForm } from "./create-ingredient-form";
-import { CategoriesTable } from "../categories-ingredients/categories-table";
+import { CreateIngredientForm } from "../../../../features/dashboard/ingredients/forms/create-ingredient-form";
 import { createClient } from "@/lib/supabase/server";
-import { DataTable } from "@/features/dashboard/data-table/data-table";
-import type { Item } from "@/features/dashboard/data-table/data-table";
-import {
-	type Column,
-	type ColumnDef,
-	type ColumnFiltersState,
-	flexRender,
-	getCoreRowModel,
-	getFacetedMinMaxValues,
-	getFacetedRowModel,
-	getFacetedUniqueValues,
-	getFilteredRowModel,
-	getSortedRowModel,
-	type RowData,
-	type SortingState,
-	useReactTable,
-} from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { IngredientsTable2 } from "./ingredients-table2";
+import { IngredientsTable } from "../../../../features/dashboard/ingredients/ingredients-table";
 
 export async function Dashboard() {
 	const supabase = createClient();
@@ -45,11 +22,9 @@ export async function Dashboard() {
 	}
 
 	const { data: categories } = await supabase.from("categories").select("*");
+	console.log("Categories:", categories);
 
 	const ingredients = await getIngredients();
-	// console.log("🚀 ~ Dashboard ~ ingredients:", ingredients)
-
-	//this will show the arrow for sorting the table but can sort without it ?? weird
 
 	return (
 		<>
@@ -70,49 +45,7 @@ export async function Dashboard() {
 				</div>
 			</div>
 			<div className="mt-4 grid gap-4">
-				<Card className="overflow-auto">
-					<CardHeader>
-						<CardTitle>Ingredients</CardTitle>
-						<CardDescription>
-							Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<IngredientsTable2 ingredients={ingredients ?? []} />
-					</CardContent>
-				</Card>
-				{/* <Card className="overflow-auto">
-					<CardHeader>
-						<CardTitle>Ingredients</CardTitle>
-						<CardDescription>
-							Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<DataTable sortingHeaders={sortingHeadersIngredients} columnsData={columnsIngredients} />
-					</CardContent>
-				</Card> */}
-
-				<Card className="overflow-auto">
-					<CardHeader>
-						<CardTitle>Ingredients</CardTitle>
-						<CardDescription>
-							Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.
-						</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<IngredientsTable ingredients={ingredients ?? []} categories={categories ?? []} />
-					</CardContent>
-				</Card>
-				<Card className="overflow-auto">
-					<CardHeader>
-						<CardTitle>Catégories</CardTitle>
-						<CardDescription>Gérez vos catégories ici. Vous pouvez créer, modifier et supprimer des catégories.</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<CategoriesTable categories={categories ?? []} />
-					</CardContent>
-				</Card>
+				<IngredientsTable ingredients={ingredients} categories={categories || []} />
 			</div>
 		</>
 	);

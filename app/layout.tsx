@@ -2,6 +2,7 @@ import type React from "react";
 import type { Metadata } from "next";
 import { cn } from "@/lib/utils";
 import { Lobster, Taviraj } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 
 import "./globals.css";
 
@@ -30,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="fr" className={cn(lobster.variable, taviraj.variable)}>
       <body
         className={cn(
           "min-h-screen antialiased",
@@ -39,6 +40,7 @@ export default function RootLayout({
         )}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );

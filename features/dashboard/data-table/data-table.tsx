@@ -31,23 +31,13 @@ declare module "@tanstack/react-table" {
 	}
 }
 
-export type Item = {
-	id: string;
-	keyword: string;
-	intents: Array<"Informational" | "Navigational" | "Commercial" | "Transactional">;
-	volume: number;
-	cpc: number;
-	traffic: number;
-	link: string;
-};
-
-type DataTableProps = {
-	columns: ColumnDef<Item>[];
+type DataTableProps<T> = {
+	columns: ColumnDef<T>[];
 	sortableHeaders: { id: string; desc: boolean }[];
-	data: Item[];
+	data: T[];
 };
 
-export function DataTable({ sortableHeaders, columns, data }: DataTableProps) {
+export function DataTable<T>({ sortableHeaders, columns, data }: DataTableProps<T>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>(sortableHeaders);
 
@@ -75,24 +65,24 @@ export function DataTable({ sortableHeaders, columns, data }: DataTableProps) {
 			<div className="flex flex-wrap gap-3">
 				{/* Search input */}
 				<div className="w-44">
-					<Filter column={table.getColumn("keyword")!} />
+					<Filter column={table.getColumn("name")!} />
 				</div>
 				{/* Intents select */}
 				<div className="w-36">
-					<Filter column={table.getColumn("intents")!} />
+					<Filter column={table.getColumn("categories")!} />
 				</div>
 				{/* Volume inputs */}
-				<div className="w-36">
+				{/* <div className="w-36">
 					<Filter column={table.getColumn("volume")!} />
-				</div>
+				</div> */}
 				{/* CPC inputs */}
-				<div className="w-36">
+				{/* <div className="w-36">
 					<Filter column={table.getColumn("cpc")!} />
-				</div>
+				</div> */}
 				{/* Traffic inputs */}
-				<div className="w-36">
+				{/* <div className="w-36">
 					<Filter column={table.getColumn("traffic")!} />
-				</div>
+				</div> */}
 			</div>
 
 			<Table>
@@ -176,12 +166,20 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 		// Get all unique values from the column
 		const values = Array.from(column.getFacetedUniqueValues().keys());
 
-		// If the values are arrays, flatten them and get unique items
+		// If the values are arrays or objects, extract the relevant value
 		const flattenedValues = values.reduce((acc: string[], curr) => {
 			if (Array.isArray(curr)) {
 				return [...acc, ...curr];
 			}
-			return [...acc, curr];
+			// Handle null values
+			if (curr === null) {
+				return [...acc, "-"];
+			}
+			// Handle category objects
+			if (curr && typeof curr === "object" && "name" in curr) {
+				return [...acc, curr.name];
+			}
+			return [...acc, String(curr)];
 		}, []);
 
 		// Get unique values and sort them
@@ -234,7 +232,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
-						<SelectItem value="all">All</SelectItem>
+						<SelectItem value="all">Toutes</SelectItem>
 						{sortedUniqueValues.map((value) => (
 							<SelectItem key={String(value)} value={String(value)}>
 								{String(value)}

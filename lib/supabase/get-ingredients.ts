@@ -1,53 +1,52 @@
-'use server';
+"use server";
 
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentWebsite } from "./get-current-website";
 
 export async function getIngredients() {
-  const supabase = createClient();
-  const website = await getCurrentWebsite(supabase);
+	const supabase = createClient();
+	const website = await getCurrentWebsite(supabase);
 
-  console.log(" Current website:", website);
+	console.log(" Current website:", website);
 
-  const { data: ingredients, error } = await supabase
-    .from("ingredients")
-    .select(`
+	const { data: ingredients, error } = await supabase
+		.from("ingredients")
+		.select(`
       id,
       name,
       website_id,
-      category_id,
       categories (
         id,
         name
       )
     `)
-    .or(`website_id.is.null,website_id.eq.${website?.id}`)
-    .order('name');
+		.or(`website_id.is.null,website_id.eq.${website?.id}`)
+		.order("name");
 
-  console.log(" Ingredients response:", { ingredients, error });
+	console.log(" Ingredients response:", { ingredients, error });
 
-  if (error) {
-    console.error("Error fetching ingredients:", error);
-    return [];
-  }
+	if (error) {
+		console.error("Error fetching ingredients:", error);
+		return [];
+	}
 
-  return ingredients;
+	return ingredients;
 }
 
 export async function getCategories() {
-  const supabase = createClient();
-  const website = await getCurrentWebsite(supabase);
+	const supabase = createClient();
+	const website = await getCurrentWebsite(supabase);
 
-  const { data: categories, error } = await supabase
-    .from("categories")
-    .select("id, name")
-    .or(`website_id.is.null,website_id.eq.${website?.id}`)
-    .order('name');
+	const { data: categories, error } = await supabase
+		.from("categories")
+		.select("id, name")
+		.or(`website_id.is.null,website_id.eq.${website?.id}`)
+		.order("name");
 
-  if (error) {
-    console.error("Error fetching categories:", error);
-    return [];
-  }
+	if (error) {
+		console.error("Error fetching categories:", error);
+		return [];
+	}
 
-  return categories.map(category => ({ id: category.id, name: category.name }));
+	return categories.map((category) => ({ id: category.id, name: category.name }));
 }

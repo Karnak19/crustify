@@ -5,8 +5,6 @@ console.log("🚀 Actions file loaded");
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { createServerAction } from "zsa";
-import { getCurrentWebsite } from "@/lib/supabase/get-current-website";
 import { authedWithWebsiteProcedure } from "@/lib/procedures";
 
 export const createIngridientAction = authedWithWebsiteProcedure
@@ -46,7 +44,8 @@ export const createIngridientAction = authedWithWebsiteProcedure
 		}
 	});
 
-export const editIngridientAction = createServerAction()
+export const editIngridientAction = authedWithWebsiteProcedure
+	.createServerAction()
 	.input(
 		z.object({
 			id: z.coerce.number(),
@@ -55,22 +54,10 @@ export const editIngridientAction = createServerAction()
 		}),
 		{ type: "formData" },
 	)
-	.handler(async ({ input }) => {
+	.handler(async ({ input, ctx }) => {
 		try {
 			console.log("🚀 Starting ingridient edit with input:", input);
-			const supabase = createClient();
-			const { data: userData } = await supabase.auth.getUser();
-			console.log("🚀 User data:", userData);
-			if (!userData.user) {
-				throw new Error("Vous devez être connecté");
-			}
-
-			const website = await getCurrentWebsite(supabase);
-
-			console.log("🚀 Website data:", website);
-			if (!website) {
-				throw new Error("Site web non rencontré");
-			}
+			const { supabase, website } = ctx;
 
 			const { error: ingridientError } = await supabase
 				.from("ingredients")
@@ -110,11 +97,7 @@ export const deleteIngridientAction = authedWithWebsiteProcedure
 		try {
 			const { supabase, website } = ctx;
 
-			const { error } = await supabase
-				.from("ingredients")
-				.delete()
-				.eq("id", input.id)
-				.eq("website_id", website.id);
+			const { error } = await supabase.from("ingredients").delete().eq("id", input.id).eq("website_id", website.id);
 
 			if (error) {
 				console.error("Error deleting ingredient:", error);
