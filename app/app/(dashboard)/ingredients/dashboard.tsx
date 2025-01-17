@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { CreateIngredientForm } from "../../../../features/dashboard/ingredients/forms/create-ingredient-form";
 import { createClient } from "@/lib/supabase/server";
 import { IngredientsTable } from "../../../../features/dashboard/ingredients/ingredients-table";
-import TabsComponent from "@/features/dashboard/tabs/tabs";
+import TabsComponent from "@/features/dashboard/tabs/tabsComponent";
 import { getIngredients } from "@/lib/supabase/get-ingredients";
 import { CategoriesTable } from "@/features/dashboard/categories/categories-table";
 
@@ -30,12 +30,14 @@ export async function Dashboard() {
 		{
 			value: "ingredients",
 			label: "Ingredients",
+			description: "Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.",
 			content: <IngredientsTable ingredients={ingredients} categories={categories || []} />,
 		},
 		{
 			value: "categories",
 			label: "Categories",
-			content: <CategoriesTable ingredients={ingredients.filter((ing) => !ing.categories)} categories={categories || []} />,
+			description: "Gérez vos catégories ici. Vous pouvez créer, modifier et supprimer des catégories.",
+			content: <CategoriesTable ingredients={ingredients} categories={categories || []} />,
 		},
 	];
 
@@ -58,7 +60,7 @@ export async function Dashboard() {
 				</div>
 			</div>
 			<div className="mt-4 grid gap-4">
-				<TabsComponent tabs={tabs} defaultValue="ingredients" />
+				<TabsComponent tabs={tabs} defaultValue="ingredients" title="Gestion des ingredients et catégories" />
 			</div>
 		</>
 	);

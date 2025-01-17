@@ -11,7 +11,7 @@ import { LoaderIcon } from "lucide-react";
 import { useServerAction } from "zsa-react";
 import { editIngridientAction } from "../../../../app/app/(dashboard)/ingredients/actions";
 import type { Tables } from "@/lib/supabase/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Ingredient = {
 	id: number;
@@ -26,9 +26,12 @@ interface EditIngredientFormProps {
 }
 
 export function EditIngredientForm({ ingredient, categories }: EditIngredientFormProps) {
-	const { executeFormAction, isSuccess, error, data, isPending } = useServerAction(editIngridientAction);
+	const { executeFormAction, error, isPending } = useServerAction(editIngridientAction, {
+		onSuccess: () => {
+			toast(ToastText.success.ingredient.update);
+		},
+	});
 	const [categoryValue, setCategoryValue] = useState<string>(ingredient.categories?.id.toString() || "none");
-	console.log("🚀 ~ EditIngredientForm ~ isSuccess:", isSuccess);
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -52,14 +55,6 @@ export function EditIngredientForm({ ingredient, categories }: EditIngredientFor
 			});
 		}
 	};
-
-	// Handle success state with useEffect
-	useEffect(() => {
-		if (isSuccess) {
-			toast(ToastText.success.ingredient.update);
-			window.location.reload();
-		}
-	}, [isSuccess]);
 
 	return (
 		<form onSubmit={handleSubmit} className="grid gap-4">
