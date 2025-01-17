@@ -31,13 +31,19 @@ declare module "@tanstack/react-table" {
 	}
 }
 
+interface FilterConfig {
+	id: string;
+	width?: string;
+}
+
 type DataTableProps<T> = {
 	columns: ColumnDef<T>[];
 	sortableHeaders: { id: string; desc: boolean }[];
 	data: T[];
+	filters?: FilterConfig[];
 };
 
-export function DataTable<T>({ sortableHeaders, columns, data }: DataTableProps<T>) {
+export function DataTable<T>({ sortableHeaders, columns, data, filters }: DataTableProps<T>) {
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [sorting, setSorting] = useState<SortingState>(sortableHeaders);
 
@@ -61,29 +67,19 @@ export function DataTable<T>({ sortableHeaders, columns, data }: DataTableProps<
 
 	return (
 		<div className="space-y-6">
-			{/* Filters */}
-			<div className="flex flex-wrap gap-3">
-				{/* Search input */}
-				<div className="w-44">
-					<Filter column={table.getColumn("name")!} />
+			{filters && filters.length > 0 && (
+				<div className="flex flex-wrap gap-3">
+					{filters.map((filter) => {
+						const column = table.getColumn(filter.id);
+						if (!column) return null;
+						return (
+							<div key={filter.id} className={filter.width || "w-44"}>
+								<Filter column={column} />
+							</div>
+						);
+					})}
 				</div>
-				{/* Intents select */}
-				<div className="w-36">
-					<Filter column={table.getColumn("categories")!} />
-				</div>
-				{/* Volume inputs */}
-				{/* <div className="w-36">
-					<Filter column={table.getColumn("volume")!} />
-				</div> */}
-				{/* CPC inputs */}
-				{/* <div className="w-36">
-					<Filter column={table.getColumn("cpc")!} />
-				</div> */}
-				{/* Traffic inputs */}
-				{/* <div className="w-36">
-					<Filter column={table.getColumn("traffic")!} />
-				</div> */}
-			</div>
+			)}
 
 			<Table>
 				<TableHeader>

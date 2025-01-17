@@ -2,7 +2,6 @@
 
 import {
 	ColumnsIngredientsTable,
-	type Ingredient,
 	SortableHeadersIngredients,
 } from "../../../app/app/(dashboard)/ingredients/columns-ingredient-table";
 import { DataTable } from "@/features/dashboard/data-table/data-table";
@@ -16,6 +15,17 @@ export function IngredientsTable({
 	ingredients: Ingredient[];
 	categories: Tables<"categories">[];
 }) {
+	const filters = [
+		{
+			id: "name",
+			width: "w-44",
+		},
+		{
+			id: "categories",
+			width: "w-36",
+		},
+	];
+
 	return (
 		<Card className="overflow-auto">
 			<CardHeader>
@@ -27,6 +37,7 @@ export function IngredientsTable({
 					sortableHeaders={SortableHeadersIngredients}
 					data={initialIngredients}
 					columns={ColumnsIngredientsTable({ categories })}
+					filters={filters}
 				/>
 			</CardContent>
 		</Card>

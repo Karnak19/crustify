@@ -1,4 +1,5 @@
 "use client";
+import type { ColumnDef } from "@tanstack/react-table";
 import type { Tables } from "@/lib/supabase/types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
@@ -19,34 +20,24 @@ export const SortableHeadersIngredients = [
 	{ id: "type", desc: false },
 ];
 
+export const SortableHeadersCategories = [
+	{
+		id: "name",
+		desc: false,
+	},
+	{
+		id: "type",
+		desc: false,
+	},
+];
+
 export const ColumnsCategoriesTable = ({ categories }: { categories: Tables<"categories">[] }) => [
 	{
 		header: "Nom de la categorie",
 		accessorKey: "name",
 		cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
 	},
-	// {
-	// 	header: "Categorie",
-	// 	accessorKey: "categories",
-	// 	cell: ({ row }) => {
-	// 		const category = row.getValue("categories") as { id: number; name: string } | null;
-	// 		return category ? <div>{category.name}</div> : <div>-</div>;
-	// 	},
-	// 	meta: {
-	// 		filterVariant: "select",
-	// 	},
-	// 	filterFn: (row, id, filterValue) => {
-	// 		const category = row.getValue(id) as { id: number; name: string } | null;
 
-	// 		// Handle the case when filtering for "-" (null categories)
-	// 		if (filterValue === "-") {
-	// 			return category === null;
-	// 		}
-
-	// 		// Handle normal category filtering
-	// 		return category?.name === filterValue;
-	// 	},
-	// },
 	{
 		header: "Type",
 		accessorKey: "website_id",

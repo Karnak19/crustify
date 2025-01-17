@@ -1,31 +1,36 @@
 "use client";
 
-import { DataTable } from "@/features/dashboard/data-table/data-table";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Tables } from "@/lib/supabase/types";
-import { ColumnsCategoriesTable } from "@/app/app/(dashboard)/categories-ingredients/columns-categories-table";
-import { SortableHeadersIngredients } from "@/app/app/(dashboard)/ingredients/columns-ingredient-table";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { DataTable } from "@/features/dashboard/data-table/data-table";
+import { ColumnsCategoriesTable, SortableHeadersCategories } from "@/app/app/(dashboard)/categories-ingredients/columns-categories-table";
+import type { Ingredient } from "@/lib/supabase/types";
 
-export function CategoriesTable({
-	ingredients: initialIngredients,
-	categories,
-}: {
+interface CategoriesTableProps {
 	ingredients: Ingredient[];
 	categories: Tables<"categories">[];
-}) {
+}
+
+export function CategoriesTable({ ingredients, categories }: CategoriesTableProps) {
+	const filters = [
+		{
+			id: "name",
+			width: "w-44",
+		},
+	];
+
 	return (
 		<Card className="overflow-auto">
 			<CardHeader>
 				<CardTitle>Categories</CardTitle>
-				<CardDescription>
-					Gérez vos categories d'ingredients ici. Vous pouvez créer, modifier et supprimer des categories.
-				</CardDescription>
+				<CardDescription>Gérez vos catégories ici. Vous pouvez créer, modifier et supprimer des catégories.</CardDescription>
 			</CardHeader>
 			<CardContent>
 				<DataTable
-					sortableHeaders={SortableHeadersIngredients}
-					data={initialIngredients}
-					columns={ColumnsCategoriesTable({ categories })}
+					sortableHeaders={SortableHeadersCategories}
+					data={categories}
+					columns={ColumnsCategoriesTable({ ingredients })}
+					filters={filters}
 				/>
 			</CardContent>
 		</Card>
