@@ -12,7 +12,6 @@ export type Ingredient = Omit<Tables<"ingredients">, "created_at" | "category_id
 };
 
 export const SortableHeadersIngredients = [
-	// { id: "traffic", desc: false },
 	{ id: "name", desc: false },
 	{ id: "categories", desc: true },
 	{ id: "type", desc: false },

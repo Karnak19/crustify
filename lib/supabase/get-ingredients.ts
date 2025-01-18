@@ -7,8 +7,6 @@ export async function getIngredients() {
 	const supabase = createClient();
 	const website = await getCurrentWebsite(supabase);
 
-	console.log(" Current website:", website);
-
 	const { data: ingredients, error } = await supabase
 		.from("ingredients")
 		.select(`
@@ -22,8 +20,6 @@ export async function getIngredients() {
     `)
 		.or(`website_id.is.null,website_id.eq.${website?.id}`)
 		.order("name");
-
-	console.log(" Ingredients response:", { ingredients, error });
 
 	if (error) {
 		console.error("Error fetching ingredients:", error);

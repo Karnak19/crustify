@@ -8,6 +8,7 @@ import { EditIngredientForm } from "../../../../features/dashboard/ingredients/f
 import { DeleteButton } from "@/features/dashboard/buttons/delete-button";
 import { deleteCategoryAction } from "./actions";
 
+export type Category = Tables<"categories">;
 export type Ingredient = Omit<Tables<"ingredients">, "created_at" | "category_id"> & {
 	categories: { id: number; name: string } | null;
 };

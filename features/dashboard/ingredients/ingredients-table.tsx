@@ -2,6 +2,7 @@
 
 import {
 	ColumnsIngredientsTable,
+	type Ingredient,
 	SortableHeadersIngredients,
 } from "../../../app/app/(dashboard)/ingredients/columns-ingredient-table";
 import { DataTable } from "@/features/dashboard/data-table/data-table";

@@ -180,7 +180,7 @@ function Filter({ column }: { column: Column<any, unknown> }) {
 
 		// Get unique values and sort them
 		return Array.from(new Set(flattenedValues)).sort();
-	}, [column.getFacetedUniqueValues(), filterVariant]);
+	}, [column, filterVariant]);
 
 	if (filterVariant === "range") {
 		return (
