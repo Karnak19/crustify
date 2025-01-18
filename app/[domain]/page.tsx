@@ -1,12 +1,12 @@
 import { notFound } from "next/navigation";
 
-import { getPizzas } from "@/lib/supabase/get-pizzas";
-import { Hero } from "./hero";
 import { InfiniteMovingCards } from "@/components/ui/infinite-moving-cards";
 import { getImageUrl } from "@/lib/supabase/get-image-url";
-import { createClient } from "@/lib/supabase/server";
+import { getPizzas } from "@/lib/supabase/get-pizzas";
 import { getWebsiteData } from "@/lib/supabase/queries";
 import { Hero2 } from "./sections/hero2";
+import { createClient } from "@/lib/supabase/server";
+import { Hero } from "./hero";
 
 export const dynamic = "force-static";
 export const revalidate = 86400; // 24 hours

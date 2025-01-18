@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,7 +14,6 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { toast } from "@/hooks/use-toast";
 
 interface DeleteButtonConfirmationProps {
 	id: string | number;
@@ -45,16 +45,13 @@ export function DeleteButtonConfirmation({
 			const { error } = await onDelete(id);
 			if (error) throw error;
 
-			toast({
-				title: "Suppression réussie",
+			toast.success("Suppression réussie", {
 				description: "L'élément a été supprimé avec succès.",
 			});
 			setOpen(false);
 		} catch (error) {
 			console.error("Error deleting:", error);
-			toast({
-				variant: "destructive",
-				title: "Erreur lors de la suppression",
+			toast.error("Erreur lors de la suppression", {
 				description: "Une erreur est survenue lors de la suppression.",
 			});
 		} finally {

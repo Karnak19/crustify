@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ToastText } from "@/lib/toasts/text-toast";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import type { Tables } from "@/lib/supabase/types";
 import { createCategoryAction } from "./actions";
 
@@ -19,16 +19,13 @@ export function CreateCategoryForm({ categories }: { categories: Tables<"categor
 
 	const { executeFormAction, isPending } = useServerAction(createCategoryAction, {
 		onSuccess: () => {
-			toast(ToastText.success.category.create);
+			toast.success(...ToastText.success.category.create);
 			formRef.current?.reset();
 			setName("");
 			setError(null);
 		},
 		onError: () => {
-			toast({
-				variant: "destructive",
-				...ToastText.error.category.create,
-			});
+			toast.error(...ToastText.error.category.create);
 		},
 	});
 

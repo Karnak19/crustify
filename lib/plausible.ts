@@ -12,14 +12,11 @@ export async function createWebsiteAnalytics(domain: string) {
   const fd = new FormData();
   fd.append("domain", domain);
 
-  const response = await fetch(
-    "https://plausible.rover.vernouillet.dev/api/v1/sites",
-    {
-      headers: { Authorization: `Bearer ${token}` },
-      method: "POST",
-      body: fd,
-    }
-  );
+  const response = await fetch("https://plausible.crustify.fr/api/v1/sites", {
+    headers: { Authorization: `Bearer ${token}` },
+    method: "POST",
+    body: fd,
+  });
 
   if (!response.ok) {
     const json = await response.json();
@@ -42,7 +39,7 @@ export async function putWebsiteSharedLink(domain: string) {
   fd.append("name", "shared");
 
   const response = await fetch(
-    "https://plausible.rover.vernouillet.dev/api/v1/sites/shared-links",
+    "https://plausible.crustify.fr/api/v1/sites/shared-links",
     {
       headers: { Authorization: `Bearer ${token}` },
       method: "PUT",

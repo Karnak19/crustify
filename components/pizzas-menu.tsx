@@ -1,3 +1,4 @@
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
 
 export function PizzasMenu({
@@ -9,16 +10,18 @@ export function PizzasMenu({
   }[];
 }) {
   return (
-    <main className="max-w-[100ch] mx-auto py-12 lg:py-16 bg-card shadow-lg rounded-lg my-20">
-      <h1 className="mb-8 text-3xl font-bold tracking-tight md:text-4xl font-serif px-4 md:px-6 lg:px-8">
-        Menu
-      </h1>
-      <div className="grid md:grid-cols-2 divide-x divide-border gap-y-6 md:gap-y-0">
+    <Card className="max-w-[100ch] mx-auto my-20">
+      <CardHeader>
+        <CardTitle className="text-3xl font-bold tracking-tight md:text-4xl font-serif px-4 md:px-6 lg:px-8">
+          Menu
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="grid md:grid-cols-2 divide-x divide-border gap-y-6 md:gap-y-0">
         {sections.map((section) => (
           <PizzasMenuSection key={section.title} {...section} />
         ))}
-      </div>
-    </main>
+      </CardContent>
+    </Card>
   );
 
   function PizzasMenuSection({

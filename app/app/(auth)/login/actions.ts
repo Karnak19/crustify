@@ -27,7 +27,8 @@ export const loginAction = createServerAction()
       throw new ZSAError("ERROR", "Email ou mot de passe incorrect");
     }
 
-    return redirect("/");
+    revalidatePath("/", "layout");
+    return null;
   });
 
 export const signUpAction = createServerAction()

@@ -1,23 +1,23 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { Building, LoaderIcon, Phone } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { useFormStatus } from "react-dom";
 import { useServerAction } from "zsa-react";
 
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-import { addContactAction } from "./actions";
 import { cn } from "@/lib/utils";
+import { addContactAction } from "./actions";
 
 type AddContactFormProps = {
   websiteId: number;
   phone: string;
-  address: string;
-  zip: string;
+  street_address: string;
+  zip_code: string;
   city: string;
 };
 
@@ -56,23 +56,28 @@ export function AddContactForm(props: AddContactFormProps) {
       </div>
       {/* Rue */}
       <div className="flex flex-col gap-1">
-        <Label htmlFor="address" className="inline-flex items-center">
+        <Label htmlFor="street_address" className="inline-flex items-center">
           <Building className="size-3 mr-1" />
           Adresse :
         </Label>
         <Input
-          defaultValue={props.address}
+          defaultValue={props.street_address}
           type="text"
-          name="address"
+          name="street_address"
           required
           placeholder="17 rue de la pizza"
         />
       </div>
-      {/* Code postal */}
+      {/* Code postal et ville */}
       <div className="grid grid-cols-[1fr,2fr] gap-1">
         <div className="flex flex-col gap-1">
-          <Label htmlFor="zip">Code postal :</Label>
-          <Input defaultValue={props.zip} type="text" name="zip" required />
+          <Label htmlFor="zip_code">Code postal :</Label>
+          <Input
+            defaultValue={props.zip_code}
+            type="text"
+            name="zip_code"
+            required
+          />
         </div>
         {/* Ville */}
         <div className="flex flex-col gap-1">

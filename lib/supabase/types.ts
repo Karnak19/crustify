@@ -406,40 +406,55 @@ export type Database = {
       }
       websites: {
         Row: {
-          address: string | null
+          city: string | null
+          contact_button_text: string | null
           created_at: string
+          homepage_description: string | null
           id: number
           logo: string | null
+          menu_button_text: string | null
           name: string | null
           phone: string | null
           plausible_shared_link: string | null
+          street_address: string | null
           subdomain: string
           theme_id: number
           user_id: string
+          zip_code: string | null
         }
         Insert: {
-          address?: string | null
+          city?: string | null
+          contact_button_text?: string | null
           created_at?: string
+          homepage_description?: string | null
           id?: number
           logo?: string | null
+          menu_button_text?: string | null
           name?: string | null
           phone?: string | null
           plausible_shared_link?: string | null
+          street_address?: string | null
           subdomain: string
           theme_id?: number
           user_id: string
+          zip_code?: string | null
         }
         Update: {
-          address?: string | null
+          city?: string | null
+          contact_button_text?: string | null
           created_at?: string
+          homepage_description?: string | null
           id?: number
           logo?: string | null
+          menu_button_text?: string | null
           name?: string | null
           phone?: string | null
           plausible_shared_link?: string | null
+          street_address?: string | null
           subdomain?: string
           theme_id?: number
           user_id?: string
+          zip_code?: string | null
         }
         Relationships: [
           {

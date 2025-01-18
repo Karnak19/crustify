@@ -43,7 +43,14 @@ export default async function middleware(req: NextRequest) {
     const session = await getSession();
     console.log("🚀 ~ middleware ~ session:", session?.user.email);
 
-    const publicPaths = ["/login", "/signup", "/forgot-password"];
+    const publicPaths = [
+      "/login",
+      "/signup",
+      "/forgot-password",
+      "/reset-password",
+    ];
+
+    console.log("🚀 ~ middleware ~ req.url:", req.url);
 
     if (!session && !publicPaths.includes(path)) {
       return NextResponse.redirect(new URL("/login", req.url));

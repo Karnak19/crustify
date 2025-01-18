@@ -2,11 +2,11 @@
 import { LoaderIcon, PlusCircle } from "lucide-react";
 import { useRef, useState } from "react";
 import { useServerAction } from "zsa-react";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Combobox } from "@/components/ui/combobox";
-import { toast } from "@/hooks/use-toast";
 import type { Tables } from "@/lib/supabase/types";
 import { ToastText } from "@/lib/toasts/text-toast";
 import { createCategoryAction } from "@/features/dashboard/categories/actions";
@@ -19,25 +19,19 @@ export function CreateIngredientForm({ categories }: { categories: Tables<"categ
 	const { executeFormAction, isPending } = useServerAction(createIngridientAction, {
 		onSuccess: () => {
 			formRef.current?.reset();
-			toast(ToastText.success.ingredient.create);
+			toast.success(...ToastText.success.ingredient.create);
 		},
 		onError: () => {
-			toast({
-				variant: "destructive",
-				...ToastText.error.ingredient.create,
-			});
+			toast.error(...ToastText.error.ingredient.create);
 		},
 	});
 	const { execute: createCategory, isPending: isPendingCategory } = useServerAction(createCategoryAction, {
 		onSuccess: ({ data }) => {
-			toast(ToastText.success.category.create);
+			toast.success(...ToastText.success.category.create);
 			setInputValue(data.category.name);
 		},
 		onError: () => {
-			toast({
-				variant: "destructive",
-				...ToastText.error.category.create,
-			});
+			toast.error(...ToastText.error.category.create);
 		},
 	});
 
