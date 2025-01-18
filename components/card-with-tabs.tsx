@@ -16,7 +16,7 @@ interface TabsProps {
 	title: string;
 }
 
-export default function TabsComponent({ tabs, defaultValue }: TabsProps) {
+export function CardWithTabs({ tabs, defaultValue }: TabsProps) {
 	return (
 		<Tabs defaultValue={defaultValue || tabs[0]?.value}>
 			<CardHeader className="space-y-0">

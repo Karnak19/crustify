@@ -1,18 +1,16 @@
 "use client";
 import { LoaderIcon, PlusCircle } from "lucide-react";
 import { useRef, useState } from "react";
-
+import { useServerAction } from "zsa-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { ToastText } from "@/features/dashboard/toasts/text-toast";
-
-import { useServerAction } from "zsa-react";
-import { createIngridientAction } from "@/app/app/(dashboard)/ingredients/actions";
-import type { Tables } from "@/lib/supabase/types";
 import { Combobox } from "@/components/ui/combobox";
-import { createCategoryAction } from "@/app/app/(dashboard)/categories-ingredients/actions";
+import { toast } from "@/hooks/use-toast";
+import type { Tables } from "@/lib/supabase/types";
+import { ToastText } from "@/lib/toasts/text-toast";
+import { createCategoryAction } from "@/features/dashboard/categories/actions";
+import { createIngridientAction } from "./actions";
 
 export function CreateIngredientForm({ categories }: { categories: Tables<"categories">[] }) {
 	const [inputValue, setInputValue] = useState("");

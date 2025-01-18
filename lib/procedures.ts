@@ -10,7 +10,10 @@ export const withSupabaseProcedure = createServerActionProcedure().handler(async
 export const authedWithWebsiteProcedure = createServerActionProcedure(withSupabaseProcedure).handler(async ({ ctx }) => {
 	const client = createClient();
 
-	const website = await getCurrentWebsite(client);
+	const website = await getCurrentWebsite(client).catch((error) => {
+		console.error("Error fetching website:", error);
+		throw new ZSAError("NOT_AUTHORIZED", error.message);
+	});
 
 	if (!website) {
 		throw new ZSAError("NOT_FOUND", "Site web non rencontré");

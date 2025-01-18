@@ -1,11 +1,9 @@
-import { ZSAError } from "zsa";
-
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 export async function getCurrentWebsite(supabase: SupabaseClient) {
 	const { data: userData } = await supabase.auth.getUser();
 	if (!userData.user) {
-		throw new ZSAError("NOT_AUTHORIZED", "Vous devez être connecté");
+		throw new Error("Vous devez être connecté");
 	}
 
 	const website = await supabase.from("websites").select("id, subdomain").eq("user_id", userData.user?.id).single<{

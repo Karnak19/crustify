@@ -1,17 +1,15 @@
 "use client";
 
+import { useServerAction } from "zsa-react";
+import { LoaderIcon } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "@/hooks/use-toast";
-import { ToastText } from "@/features/dashboard/toasts/text-toast";
-import { LoaderIcon } from "lucide-react";
-
-import { useServerAction } from "zsa-react";
-import { editIngridientAction } from "../../../../app/app/(dashboard)/ingredients/actions";
+import { ToastText } from "@/lib/toasts/text-toast";
 import type { Tables } from "@/lib/supabase/types";
-import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
+import { editIngridientAction } from "./actions";
 
 type Ingredient = {
 	id: number;
@@ -30,34 +28,17 @@ export function EditIngredientForm({ ingredient, categories }: EditIngredientFor
 		onSuccess: () => {
 			toast(ToastText.success.ingredient.update);
 		},
-	});
-	const [categoryValue, setCategoryValue] = useState<string>(ingredient.categories?.id.toString() || "none");
-
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		try {
-			const formData = new FormData(e.currentTarget);
-			formData.append("id", ingredient.id.toString());
-
-			const newCategoryId = categoryValue;
-			if (newCategoryId !== (ingredient.categories?.id.toString() || "none")) {
-				if (newCategoryId !== "none") {
-					formData.append("category_id", newCategoryId);
-				}
-			}
-
-			await executeFormAction(formData);
-		} catch (error) {
-			console.error("Error updating ingredient:", error);
+		onError: () => {
 			toast({
 				variant: "destructive",
 				...ToastText.error.ingredient.update,
 			});
-		}
-	};
+		},
+	});
 
 	return (
-		<form onSubmit={handleSubmit} className="grid gap-4">
+		<form action={executeFormAction} className="grid gap-4">
+			<input type="hidden" name="id" value={ingredient.id} />
 			<div className="grid gap-2">
 				<Label>Nom de l'ingredient:</Label>
 				<Input type="text" name="name" defaultValue={ingredient.name} required />
@@ -65,11 +46,9 @@ export function EditIngredientForm({ ingredient, categories }: EditIngredientFor
 
 			<div className="grid gap-2">
 				<Label>Catégorie (optionnel):</Label>
-				<Select value={categoryValue} onValueChange={setCategoryValue}>
+				<Select name="category_id" defaultValue={ingredient.categories?.id.toString() || "none"}>
 					<SelectTrigger>
-						<SelectValue placeholder="Sélectionnez une catégorie">
-							{categoryValue === "none" ? "Aucune catégorie" : categories.find((c) => c.id.toString() === categoryValue)?.name}
-						</SelectValue>
+						<SelectValue placeholder="Sélectionnez une catégorie" />
 					</SelectTrigger>
 					<SelectContent>
 						<SelectItem value="none">Aucune catégorie</SelectItem>

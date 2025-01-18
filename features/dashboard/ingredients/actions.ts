@@ -1,10 +1,8 @@
 "use server";
 
-console.log("🚀 Actions file loaded");
-
-import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { createClient } from "@/lib/supabase/server";
 import { authedWithWebsiteProcedure } from "@/lib/procedures";
 
 export const createIngridientAction = authedWithWebsiteProcedure

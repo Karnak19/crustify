@@ -1,17 +1,16 @@
 "use client";
 
-import { LoaderIcon, PlusCircle } from "lucide-react";
 import type React from "react";
+import { useRef, useState } from "react";
+import { useServerAction } from "zsa-react";
+import { LoaderIcon, PlusCircle } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ToastText } from "@/lib/toasts/text-toast";
 import { toast } from "@/hooks/use-toast";
-import { ToastText } from "@/features/dashboard/toasts/text-toast";
-
-import { useServerAction } from "zsa-react";
-import { createCategoryAction } from "@/app/app/(dashboard)/categories-ingredients/actions";
-import { useRef, useState } from "react";
 import type { Tables } from "@/lib/supabase/types";
+import { createCategoryAction } from "./actions";
 
 export function CreateCategoryForm({ categories }: { categories: Tables<"categories">[] }) {
 	const formRef = useRef<HTMLFormElement>(null);

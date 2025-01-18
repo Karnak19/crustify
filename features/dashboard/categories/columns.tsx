@@ -1,27 +1,19 @@
 "use client";
 import type { ColumnDef } from "@tanstack/react-table";
-import type { Tables } from "@/lib/supabase/types";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { Pencil } from "lucide-react";
-import { EditIngredientForm } from "../../../../features/dashboard/ingredients/forms/edit-ingredient-form";
-import { DeleteButton } from "@/features/dashboard/buttons/delete-button";
+import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import { ZsaDeleteButtonWithToast } from "@/components/zsa-delete-button-with-toast";
+import { Button } from "@/components/ui/button";
+import type { Tables } from "@/lib/supabase/types";
 import { deleteCategoryAction } from "./actions";
+import { EditCategoryForm } from "./edit-form";
 
 export type Category = Tables<"categories">;
 export type Ingredient = Omit<Tables<"ingredients">, "created_at" | "category_id"> & {
 	categories: { id: number; name: string } | null;
 };
 
-export const SortableHeadersIngredients = [
-	// { id: "traffic", desc: false },
-
-	{ id: "name", desc: false },
-	// { id: "categories", desc: true },
-	{ id: "type", desc: false },
-];
-
-export const SortableHeadersCategories = [
+export const sortableHeaders = [
 	{
 		id: "name",
 		desc: false,
@@ -32,7 +24,7 @@ export const SortableHeadersCategories = [
 	},
 ];
 
-export const ColumnsCategoriesTable = ({ categories }: { categories: Tables<"categories">[] }) => [
+export const columns: ColumnDef<Category>[] = [
 	{
 		header: "Nom de la categorie",
 		accessorKey: "name",
@@ -54,11 +46,11 @@ export const ColumnsCategoriesTable = ({ categories }: { categories: Tables<"cat
 		header: "Actions",
 		id: "actions",
 		cell: ({ row }) => {
-			const ingredient = row.original;
+			const category = row.original;
 
 			return (
 				<div className="flex items-center gap-2">
-					{ingredient.website_id !== null && (
+					{category.website_id && (
 						<>
 							<Dialog>
 								<DialogTrigger asChild>
@@ -67,12 +59,12 @@ export const ColumnsCategoriesTable = ({ categories }: { categories: Tables<"cat
 									</Button>
 								</DialogTrigger>
 								<DialogContent>
-									<DialogHeader>Modifier l'ingrédient</DialogHeader>
-									<EditIngredientForm ingredient={ingredient} categories={categories} />
+									<DialogHeader>Modifier la catégorie</DialogHeader>
+									<EditCategoryForm category={category} />
 								</DialogContent>
 							</Dialog>
 
-							<DeleteButton id={ingredient.id} onDelete={deleteCategoryAction} />
+							<ZsaDeleteButtonWithToast id={category.id} onDeleteAction={deleteCategoryAction} />
 						</>
 					)}
 				</div>

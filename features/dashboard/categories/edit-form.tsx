@@ -1,12 +1,12 @@
 "use client";
 
-import { useRef, FormEvent } from "react";
+import { useRef, type FormEvent } from "react";
+import { useServerAction } from "zsa-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useServerAction } from "zsa-react";
-import { editCategoryAction } from "../../../../app/app/(dashboard)/categories-ingredients/actions";
 import type { Tables } from "@/lib/supabase/types";
+import { editCategoryAction } from "./actions";
 
 type Category = Tables<"categories">;
 

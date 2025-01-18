@@ -1,14 +1,13 @@
-import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-
-import { CreateIngredientForm } from "../../../../features/dashboard/ingredients/forms/create-ingredient-form";
-import { CreateCategoryForm } from "../../../../features/dashboard/categories/forms/create-category-form"; // Import the new CreateCategoryForm component
+import { CardWithTabs } from "@/components/card-with-tabs";
 import { createClient } from "@/lib/supabase/server";
-import { IngredientsTable } from "../../../../features/dashboard/ingredients/ingredients-table";
-import TabsComponent from "@/features/dashboard/tabs/tabsComponent";
 import { getIngredients } from "@/lib/supabase/get-ingredients";
-import { CategoriesTable } from "@/features/dashboard/categories/categories-table";
+import { CreateIngredientForm } from "@/features/dashboard/ingredients/create-form";
+import { IngredientsTable } from "@/features/dashboard/ingredients/table";
+import { CreateCategoryForm } from "@/features/dashboard/categories/create-form";
+import { CategoriesTable } from "@/features/dashboard/categories/table";
 
 export async function Dashboard() {
 	const supabase = createClient();
@@ -25,21 +24,22 @@ export async function Dashboard() {
 	}
 
 	const { data: fetchedCategories } = await supabase.from("categories").select("*");
-	const categories: Array<{ created_at: string; id: number; name: string; updated_at: string; website_id: number | null; }> = fetchedCategories ?? [];
+	const categories: Array<{ created_at: string; id: number; name: string; updated_at: string; website_id: number | null }> =
+		fetchedCategories ?? [];
 	const ingredients = await getIngredients();
 
 	const tabs = [
 		{
-			value: "ingredients",
+			value: "ingredients" as const,
 			label: "Ingredients",
 			description: "Gérez vos ingredients ici. Vous pouvez créer, modifier et supprimer des ingredients.",
 			content: <IngredientsTable ingredients={ingredients} categories={categories} />,
 		},
 		{
-			value: "categories",
+			value: "categories" as const,
 			label: "Categories",
 			description: "Gérez vos catégories ici. Vous pouvez créer, modifier et supprimer des catégories.",
-			content: <CategoriesTable ingredients={ingredients} categories={categories} />,
+			content: <CategoriesTable categories={categories} />,
 		},
 	];
 
@@ -73,7 +73,7 @@ export async function Dashboard() {
 					</Dialog>
 				</div>
 			</div>
-			<TabsComponent tabs={tabs} defaultValue="ingredients" title="Gestion des ingredients et catégories" />
+			<CardWithTabs tabs={tabs} defaultValue="ingredients" title="Gestion des ingredients et catégories" />
 		</>
 	);
 }

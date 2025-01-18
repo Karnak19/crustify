@@ -1,23 +1,26 @@
 "use client";
-import type { Tables } from "@/lib/supabase/types";
+import type { ColumnDef } from "@tanstack/react-table";
+import { Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
-import { Pencil } from "lucide-react";
-import { EditIngredientForm } from "../../../../features/dashboard/ingredients/forms/edit-ingredient-form";
-import { DeleteButton } from "@/features/dashboard/buttons/delete-button";
+import { ZsaDeleteButtonWithToast } from "@/components/zsa-delete-button-with-toast";
+import type { Tables } from "@/lib/supabase/types";
+import { EditIngredientForm } from "./edit-form";
 import { deleteIngridientAction } from "./actions";
 
 export type Ingredient = Omit<Tables<"ingredients">, "created_at" | "category_id"> & {
 	categories: { id: number; name: string } | null;
 };
 
-export const SortableHeadersIngredients = [
+export const sortableHeaders = [
 	{ id: "name", desc: false },
 	{ id: "categories", desc: true },
 	{ id: "type", desc: false },
 ];
 
-export const ColumnsIngredientsTable = ({ categories }: { categories: Tables<"categories">[] }) => [
+type ColumnsFn = (categories: Tables<"categories">[]) => ColumnDef<Ingredient>[];
+
+export const columns: ColumnsFn = (categories: Tables<"categories">[]) => [
 	{
 		header: "Nom",
 		accessorKey: "name",
@@ -78,7 +81,7 @@ export const ColumnsIngredientsTable = ({ categories }: { categories: Tables<"ca
 								</DialogContent>
 							</Dialog>
 
-							<DeleteButton id={ingredient.id} onDelete={deleteIngridientAction} />
+							<ZsaDeleteButtonWithToast id={ingredient.id} onDeleteAction={deleteIngridientAction} />
 						</>
 					)}
 				</div>
