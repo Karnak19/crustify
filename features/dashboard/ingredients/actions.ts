@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { authedWithWebsiteProcedure } from "@/lib/procedures";
+import { ZSAError } from "zsa";
 
 export const createIngridientAction = authedWithWebsiteProcedure
 	.createServerAction()
@@ -38,7 +39,7 @@ export const createIngridientAction = authedWithWebsiteProcedure
 			return { success: true };
 		} catch (error) {
 			console.error("🚀 Error in createIngridientAction:", error);
-			throw error;
+			throw new ZSAError("ERROR", "Une erreur est survenue lors de la création de l'ingridient");
 		}
 	});
 
