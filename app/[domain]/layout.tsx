@@ -111,20 +111,21 @@ export default async function SiteLayout({
       `}</style>
       <div className="absolute ease left-0 right-0 top-0 z-30 flex h-16 transition-all duration-150">
         <div className="flex h-full max-w-screen-xl items-center space-x-5 px-10 sm:px-20">
-          <Link href="/" className="flex items-center justify-center">
-            <div className="inline-block h-8 w-8 overflow-hidden rounded-full align-middle">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative h-10 w-10 overflow-hidden rounded-full">
               {website.logo && (
                 <img
                   alt={website.name || ""}
                   height={40}
-                  src={getImageUrl({ path: website.logo })}
                   width={40}
+                  src={getImageUrl({ path: website.logo })}
+                  className="h-full w-full object-cover"
                 />
               )}
             </div>
-            <span className="ml-3 inline-block truncate font-title font-medium">
-              {website.name}
-            </span>
+            {website.name && (
+              <span className="text-lg font-medium">{website.name}</span>
+            )}
           </Link>
         </div>
       </div>

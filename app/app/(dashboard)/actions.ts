@@ -35,7 +35,9 @@ export const createWebsiteAction = createServerAction()
   });
 
 const addLogoSchema = z.object({
-  file: z.instanceof(File),
+  file: z.custom<Blob>((v) => v instanceof Blob, {
+    message: "Please upload a valid file",
+  }),
 });
 
 export async function addLogo(_: unknown, formData: FormData) {
@@ -59,25 +61,24 @@ export async function addLogo(_: unknown, formData: FormData) {
 
   const data = addLogoSchema.parse(Object.fromEntries(formData.entries()));
 
+  const file = data.file as File; // Cast Blob to File to access the name property
+
   const { data: imgData, error } = await supabase.storage
     .from("pizzas")
     .upload(
-      `${userData.user.id}/${website.id}/${data.file.name.replace(
-        /\s/g,
-        "-"
-      )}-${Date.now()}`,
-      data.file
+      `${userData.user.id}/${website.id}/${file.name.replace(/\s/g, "-")}-${Date.now()}`,
+      file
     );
+
+  if (error) {
+    return { success: false, error };
+  }
 
   // upsert website with logo path
   await supabase
     .from("websites")
     .update({ logo: imgData?.path })
     .eq("id", website.id);
-
-  if (error) {
-    return { success: false, error };
-  }
 
   return { success: true };
 }

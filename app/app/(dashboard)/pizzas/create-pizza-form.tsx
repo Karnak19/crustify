@@ -6,13 +6,18 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { createPizza } from "./actions";
+import { createPizzaAction } from "./actions";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useServerAction } from "zsa-react";
 
 export function CreatePizzaForm() {
+
+  const { executeFormAction, isSuccess, error } = useServerAction(createPizzaAction);
+
+
   return (
-    <form action={createPizza} className="grid gap-4">
+    <form action={executeFormAction} className="grid gap-4">
       <div className="grid gap-2">
         <Label>Name:</Label>
         <Input type="text" name="name" />
